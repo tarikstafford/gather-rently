@@ -5,6 +5,48 @@ import { SheetName } from './pixi/spritesheet/spritesheet'
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY
 const OPENAI_API_BASE = 'https://api.openai.com/v1'
 
+// Cache of available sprites for validation
+let spriteCache: Map<string, boolean> | null = null
+
+function initializeSpriteCache() {
+  if (spriteCache) return spriteCache
+
+  spriteCache = new Map()
+  const allSprites = getAllSprites()
+
+  for (const sprite of allSprites) {
+    const key = `${sprite.palette}-${sprite.name}`
+    spriteCache.set(key, true)
+  }
+
+  return spriteCache
+}
+
+function isSpriteAvailable(palette: string, spriteName: string): boolean {
+  const cache = initializeSpriteCache()
+  return cache.has(`${palette}-${spriteName}`)
+}
+
+function findClosestAvailableSprite(palette: SheetName, desiredName: string): string | null {
+  const sprites = getAllSprites().filter(s => s.palette === palette)
+
+  // Try exact match first
+  const exact = sprites.find(s => s.name === desiredName)
+  if (exact) return exact.name
+
+  // Try partial match (contains the desired name)
+  const partial = sprites.find(s => s.name.includes(desiredName) || desiredName.includes(s.name))
+  if (partial) return partial.name
+
+  // Return a default object sprite if available
+  const objectSprites = sprites.filter(s => s.layer === 'object')
+  if (objectSprites.length > 0) {
+    return objectSprites[0].name
+  }
+
+  return null
+}
+
 interface AIMapRequest {
   prompt: string
   width?: number
@@ -35,14 +77,19 @@ export async function generateMapWithAI(request: AIMapRequest): Promise<RealmDat
   const floorTiles = getFloorTiles().filter(s => !palette || s.palette === palette)
   const objectTiles = getObjectTiles().filter(s => !palette || s.palette === palette)
 
+  // Get available sprites for validation
+  const availableObjects = getObjectTiles().filter(s => s.palette === 'village')
+
   // Create a structured prompt for the AI
   const systemPrompt = `You are a virtual space designer. Generate a JSON map layout based on the user's description.
 
 Available floor tiles (${palette} palette):
 ${floorTiles.slice(0, 20).map(t => `- ${t.name}`).join('\n')}
 
-Available objects/furniture (${palette} palette):
-${objectTiles.slice(0, 30).map(t => `- ${t.name} (${t.width}x${t.height})`).join('\n')}
+Available objects/furniture (village palette - ONLY USE THESE):
+${availableObjects.slice(0, 30).map(t => `- ${t.name} (${t.width}x${t.height})`).join('\n')}
+
+IMPORTANT: You must ONLY use sprites from the lists above. Do not make up sprite names!
 
 You must respond with valid JSON only. Use this exact format:
 {
@@ -140,11 +187,28 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
 
   // Process each room
   for (const room of layout.rooms || []) {
+    // Validate floor tile
+    const requestedFloor = room.floorTile || 'light_solid_grass'
+    let floorTile = requestedFloor
+
+    if (!isSpriteAvailable(palette, requestedFloor)) {
+      console.warn(`Floor tile '${requestedFloor}' not found in ${palette} palette, trying to find alternative...`)
+      const alternative = findClosestAvailableSprite(palette, requestedFloor)
+      if (alternative) {
+        floorTile = alternative
+        console.log(`Using '${alternative}' instead of '${requestedFloor}'`)
+      } else {
+        // Fallback to a known floor tile
+        floorTile = 'light_solid_grass'
+        console.log(`Using fallback floor tile: ${floorTile}`)
+      }
+    }
+
     // Create floor tiles
     for (let x = room.x; x < room.x + room.width; x++) {
       for (let y = room.y; y < room.y + room.height; y++) {
         const key = `${x}, ${y}`
-        tilemap[key] = { floor: `${palette}-${room.floorTile || 'white_plum_floor'}` }
+        tilemap[key] = { floor: `${palette}-${floorTile}` }
 
         // Add walls at perimeter
         if (
@@ -160,6 +224,19 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
 
     // Place objects (use village palette for objects)
     for (const obj of room.objects || []) {
+      // Validate object sprite
+      if (!isSpriteAvailable('village', obj.name)) {
+        console.warn(`Object '${obj.name}' not found in village palette, trying to find alternative...`)
+        const alternative = findClosestAvailableSprite('village', obj.name)
+        if (alternative) {
+          console.log(`Using '${alternative}' instead of '${obj.name}'`)
+          obj.name = alternative
+        } else {
+          console.warn(`No alternative found for '${obj.name}', skipping object placement`)
+          continue // Skip this object
+        }
+      }
+
       const key = `${obj.x}, ${obj.y}`
       if (tilemap[key]) {
         tilemap[key].object = `village-${obj.name}`

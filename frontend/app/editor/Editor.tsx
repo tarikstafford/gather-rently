@@ -18,7 +18,7 @@ export type TileWithPalette = {
     name: string
     palette: SheetName}
 
-const palettes: SheetName[] = ['ground', 'grasslands', 'village', 'city', 'rently']
+const palettes: SheetName[] = ['ground', 'grasslands', 'village', 'city', 'rently', 'kenney_city', 'kenney_buildings', 'kenney_landscape']
 
 const Editor:React.FC<EditorProps> = ({ realmData }) => {
     
