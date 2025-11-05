@@ -28,7 +28,7 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, skin, username, set
                 </div>
                 <div className='flex flex-col items-center gap-4'>
                     <div className='flex flex-col items-center gap-2 bg-dark-plum border-2 border-plum rounded-xl p-6 min-w-[250px]'>
-                        <AnimatedCharacter src={src} noAnimation/>
+                        <AnimatedCharacter src={src} noAnimation className='!w-32'/>
                         <p className='text-white font-semibold'>{username}</p>
                     </div>
                     <BasicButton className='py-0 px-32 w-[250px]' onClick={() => setShowIntroScreen(false)}>
