@@ -30,10 +30,13 @@ export default async function App() {
     const errorMessage = error?.message || ''
 
     return (
-        <div>
+        <div className='min-h-screen bg-white-plum'>
             <Navbar />
-            <h1 className='text-3xl pl-4 sm:pl-8 pt-8'>Your Spaces</h1>
-            <RealmsMenu realms={realms} errorMessage={errorMessage}/>
+            <div className='max-w-7xl mx-auto px-4 sm:px-8 py-8'>
+                <h1 className='font-bold text-4xl text-dark-plum mb-2'>Your Spaces</h1>
+                <p className='text-dolphin-gray mb-8'>Manage and join your virtual collaboration spaces</p>
+                <RealmsMenu realms={realms} errorMessage={errorMessage}/>
+            </div>
         </div>
     )
 }

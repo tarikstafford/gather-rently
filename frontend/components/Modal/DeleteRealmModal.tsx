@@ -50,11 +50,16 @@ const DeleteRealmModal:React.FC<DeleteRealmModalProps> = () => {
 
     return (
         <Modal open={modal === 'Delete Realm'} closeOnOutsideClick>
-            <div className='p-2 flex flex-col items-center gap-2'>
-                <h1 className='text-center'>Are you sure you want to delete <span className='text-red-500 select-none'>{realmToDelete.name}</span>? It will be gone forever!</h1>
-                <h2 className='text-center'>Type <span className='text-red-500 select-none'>{realmToDelete.name}</span> to confirm.</h2>
-                <BasicInput className='h-8 p-2 bg-light-secondary border-none text-white' onChange={onChange} value={input}/>
-                <button className={`${loading ? 'pointer-events-none' : ''} ${getDisabled() ? 'opacity-70 pointer-events-none' : ''} 'px-2 py-1 rounded-md outline-none p-2 bg-red-500 hover:bg-red-600 animate-colors text-white cursor-pointer`} disabled={getDisabled()} onClick={onClickDelete}>Delete</button>
+            <div className='p-8 flex flex-col items-center gap-6 w-[420px]'>
+                <h1 className='text-2xl font-bold text-dark-plum text-center'>Delete Space</h1>
+                <p className='text-center text-dolphin-gray'>Are you sure you want to delete <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span>? This action cannot be undone!</p>
+                <div className='w-full'>
+                    <p className='text-sm text-dolphin-gray mb-2'>Type <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span> to confirm</p>
+                    <BasicInput className='w-full' onChange={onChange} value={input}/>
+                </div>
+                <button className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all ${loading ? 'pointer-events-none opacity-50' : ''} ${getDisabled() ? 'opacity-50 pointer-events-none' : ''} bg-red-alert hover:bg-red-600 shadow-sm hover:shadow-md`} disabled={getDisabled()} onClick={onClickDelete}>
+                    Delete Space
+                </button>
             </div>
         </Modal>
     )

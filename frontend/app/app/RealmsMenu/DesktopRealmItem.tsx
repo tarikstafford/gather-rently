@@ -59,50 +59,50 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
     return (
         <div className='relative select-none'>
             <Link href={getLink()}>
-                <div className='w-full aspect-video relative rounded-3xl border-4 border-transparent hover:border-light-secondary overflow-hidden'>
+                <div className='w-full aspect-video relative rounded-2xl border-4 border-transparent hover:border-plum-stain overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300'>
                     {/* Background pulse animation */}
-                    <div className='animate-pulse bg-secondary absolute inset-0' />
-                    
+                    <div className='animate-pulse bg-plum absolute inset-0' />
+
                     {/* Thumbnail image */}
-                    <img 
-                        src='/thumbnail.png' 
-                        className='absolute z-10' 
-                        style={{imageRendering: 'pixelated'}} 
+                    <img
+                        src='/thumbnail.png'
+                        className='absolute z-10'
+                        style={{imageRendering: 'pixelated'}}
                     />
-                    
+
                     {/* Hover effect and sign-in icon */}
                     <div className='absolute inset-0 grid place-items-center z-20 opacity-0 hover:opacity-100 transition-opacity duration-300'>
-                        <div className='rounded-full bg-black bg-opacity-70 grid place-items-center absolute p-2'>
-                            <SignIn className='w-8 h-8' />
+                        <div className='rounded-full bg-dark-plum bg-opacity-90 grid place-items-center absolute p-3'>
+                            <SignIn className='w-8 h-8 text-white' />
                         </div>
                     </div>
-                    
+
                     {/* Player count indicator */}
                     {playerCount != null && (
-                        <div className='pointer-events-none absolute top-2 left-2 rounded-full px-2 py-1 flex items-center gap-2 bg-black bg-opacity-80 max-w-max z-30'>
-                            <div className='bg-green-500 w-3 h-3 rounded-full' />
-                            <p className='text-sm'>{playerCount}</p>
+                        <div className='pointer-events-none absolute top-2 left-2 rounded-full px-3 py-1.5 flex items-center gap-2 bg-dark-plum bg-opacity-90 max-w-max z-30'>
+                            <div className='bg-sweet-mint w-3 h-3 rounded-full' />
+                            <p className='text-sm font-medium text-white'>{playerCount}</p>
                         </div>
                     )}
                 </div>
             </Link>
-            <div className='mt-2 flex flex-row justify-between'>
-                <p className='text-sm font-semibold'>{name}</p>
+            <div className='mt-3 flex flex-row justify-between items-center'>
+                <p className='text-base font-semibold text-dark-plum'>{name}</p>
                 {!shared && (
-                    <div className='flex flex-row'>
-                        <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={copyShareLink}/>
+                    <div className='flex flex-row gap-1'>
+                        <LinkIcon className='h-8 w-8 cursor-pointer hover:bg-plum-stain text-plum rounded-md p-1.5 animate-colors' onClick={copyShareLink}/>
                     <div ref={dotsRef}>
-                        <DotsThreeVertical weight='bold' className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={handleDotsClick}/>
+                        <DotsThreeVertical weight='bold' className='h-8 w-8 cursor-pointer hover:bg-plum-stain text-plum rounded-md p-1.5 animate-colors' onClick={handleDotsClick}/>
                     </div>
                 </div>)}
             </div>
             {showMenu && (
-                <div className='absolute w-36 h-24 rounded-lg bg-white right-0 flex flex-col z-10 text-black' ref={menuRef}>
-                    <button className='grow w-full hover:bg-[#B2C5FF] rounded-t-lg text-left pl-4' onClick={() => router.push(`/editor/${id}`)}>
+                <div className='absolute w-40 rounded-lg bg-white shadow-xl right-0 flex flex-col z-10 border border-gray-50 overflow-hidden' ref={menuRef}>
+                    <button className='py-3 px-4 w-full hover:bg-plum-stain text-dark-plum font-medium text-left transition-colors' onClick={() => router.push(`/editor/${id}`)}>
                         Edit Map
                     </button>
-                    <button className='grow w-full hover:bg-[#B2C5FF] text-left pl-4' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
-                    <button className='grow w-full hover:bg-red-500 hover:text-white rounded-b-lg text-left pl-4' onClick={handleDelete}>Delete</button>
+                    <button className='py-3 px-4 w-full hover:bg-plum-stain text-dark-plum font-medium text-left transition-colors' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
+                    <button className='py-3 px-4 w-full hover:bg-red-alert hover:text-white text-red-alert font-medium text-left transition-colors' onClick={handleDelete}>Delete</button>
                 </div>
             )}
         </div>

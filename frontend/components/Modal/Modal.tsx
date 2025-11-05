@@ -40,7 +40,7 @@ const Modal: React.FC<ModalProps> = ({ children, className, open, closeOnOutside
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 translate-y-0 scale-95"
             >
-              <Dialog.Panel className={`relative transform overflow-hidden rounded-lg text-left shadow-xl transition-all my-8 max-w-sm bg-secondary ${className}`}>
+              <Dialog.Panel className={`relative transform overflow-hidden rounded-2xl text-left shadow-2xl transition-all my-8 max-w-sm bg-white ${className}`}>
                 {children}
               </Dialog.Panel>
             </Transition.Child>
