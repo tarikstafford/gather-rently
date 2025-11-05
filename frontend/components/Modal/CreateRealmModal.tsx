@@ -11,14 +11,16 @@ import revalidate from '@/utils/revalidate'
 import { removeExtraSpaces } from '@/utils/removeExtraSpaces'
 import defaultMap from '@/utils/defaultmap.json'
 import { generateRandomMap, generateRentlyOffice } from '@/utils/mapGenerator'
+import { generateMapWithAI } from '@/utils/aiMapBuilder'
 
 const CreateRealmModal:React.FC = () => {
 
     const { modal, setModal } = useModal()
     const [realmName, setRealmName] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
+    const [aiPrompt, setAiPrompt] = useState<string>('')
 
-    const [mapType, setMapType] = useState<'starter' | 'random' | 'rently' | 'blank'>('starter')
+    const [mapType, setMapType] = useState<'starter' | 'random' | 'rently' | 'ai' | 'blank'>('starter')
 
     const router = useRouter()
 
@@ -39,27 +41,44 @@ const CreateRealmModal:React.FC = () => {
             name: realmName,
         }
 
-        if (mapType === 'starter') {
-            realmData.map_data = defaultMap
-        } else if (mapType === 'random') {
-            realmData.map_data = generateRandomMap()
-        } else if (mapType === 'rently') {
-            realmData.map_data = generateRentlyOffice()
-        }
-        // blank map will have no map_data
+        try {
+            if (mapType === 'starter') {
+                realmData.map_data = defaultMap
+            } else if (mapType === 'random') {
+                realmData.map_data = generateRandomMap()
+            } else if (mapType === 'rently') {
+                realmData.map_data = generateRentlyOffice()
+            } else if (mapType === 'ai') {
+                if (!aiPrompt.trim()) {
+                    toast.error('Please enter a description for the AI to generate')
+                    setLoading(false)
+                    return
+                }
+                toast.info('AI is designing your space...')
+                realmData.map_data = await generateMapWithAI({
+                    prompt: aiPrompt,
+                    palette: 'rently'
+                })
+            }
+            // blank map will have no map_data
 
-        const { data, error } = await supabase.from('realms').insert(realmData).select()
+            const { data, error } = await supabase.from('realms').insert(realmData).select()
 
-        if (error) {
-            toast.error(error?.message)
-        } 
+            if (error) {
+                toast.error(error?.message)
+            }
 
-        if (data) {
-            setRealmName('')
-            revalidate('/app')
-            setModal('None')
-            toast.success('Your space has been created!')
-            router.push(`/editor/${data[0].id}`)
+            if (data) {
+                setRealmName('')
+                setAiPrompt('')
+                revalidate('/app')
+                setModal('None')
+                toast.success('Your space has been created!')
+                router.push(`/editor/${data[0].id}`)
+            }
+        } catch (error) {
+            console.error('Error creating realm:', error)
+            toast.error('Failed to create space. Please try again.')
         }
 
         setLoading(false)
@@ -118,6 +137,18 @@ const CreateRealmModal:React.FC = () => {
                     <div className='flex items-center gap-3'>
                         <input
                             type="radio"
+                            id="ai"
+                            name="mapType"
+                            checked={mapType === 'ai'}
+                            onChange={() => setMapType('ai')}
+                            className='w-4 h-4 accent-sweet-mint'
+                        />
+                        <label htmlFor="ai" className='text-plum-stain'>AI Generated - Describe your space and let AI build it</label>
+                    </div>
+
+                    <div className='flex items-center gap-3'>
+                        <input
+                            type="radio"
                             id="blank"
                             name="mapType"
                             checked={mapType === 'blank'}
@@ -127,6 +158,20 @@ const CreateRealmModal:React.FC = () => {
                         <label htmlFor="blank" className='text-plum-stain'>Blank Canvas - Start from scratch</label>
                     </div>
                 </div>
+
+                {mapType === 'ai' && (
+                    <div className='w-full'>
+                        <label className='text-white text-sm mb-2 block'>Describe your space:</label>
+                        <textarea
+                            value={aiPrompt}
+                            onChange={(e) => setAiPrompt(e.target.value)}
+                            placeholder="e.g., A modern tech startup office with 3 meeting rooms, an open workspace with 10 desks, a meditation room, a kitchen, and a music room for jam sessions"
+                            className='w-full bg-dark-plum border border-dark-plum text-white placeholder:text-plum-stain rounded-lg p-3 min-h-[100px] resize-y'
+                            maxLength={500}
+                        />
+                        <p className='text-xs text-plum-stain mt-1'>{aiPrompt.length}/500 characters</p>
+                    </div>
+                )}
 
                 <BasicButton disabled={realmName.length <= 0 || loading} onClick={createRealm} className='text-lg w-full'>
                     {loading ? 'Creating...' : 'Create Space'}
