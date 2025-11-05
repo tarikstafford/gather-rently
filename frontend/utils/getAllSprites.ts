@@ -3,6 +3,9 @@ import { citySpriteSheetData } from './pixi/spritesheet/city'
 import { grasslandsSpriteSheetData } from './pixi/spritesheet/grasslands'
 import { villageSpriteSheetData } from './pixi/spritesheet/village'
 import { rentlySpriteSheetData } from './pixi/spritesheet/rently'
+import { kenney_citySpriteSheetData } from './pixi/spritesheet/kenney_city'
+import { kenney_buildingsSpriteSheetData } from './pixi/spritesheet/kenney_buildings'
+import { kenney_landscapeSpriteSheetData } from './pixi/spritesheet/kenney_landscape'
 import { SheetName } from './pixi/spritesheet/spritesheet'
 
 export interface SpriteInfo {
@@ -23,6 +26,9 @@ export function getAllSprites(): SpriteInfo[] {
     grasslands: grasslandsSpriteSheetData,
     village: villageSpriteSheetData,
     rently: rentlySpriteSheetData,
+    kenney_city: kenney_citySpriteSheetData,
+    kenney_buildings: kenney_buildingsSpriteSheetData,
+    kenney_landscape: kenney_landscapeSpriteSheetData,
   }
 
   for (const [palette, data] of Object.entries(datasets)) {

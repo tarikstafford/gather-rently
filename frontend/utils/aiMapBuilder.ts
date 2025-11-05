@@ -51,7 +51,8 @@ interface AIMapRequest {
   prompt: string
   width?: number
   height?: number
-  palette?: SheetName
+  floorPalette?: SheetName
+  objectPalettes?: SheetName[]
 }
 
 interface RoomLayout {
@@ -70,26 +71,43 @@ interface RoomLayout {
 }
 
 export async function generateMapWithAI(request: AIMapRequest): Promise<RealmData> {
-  const { prompt, width = 50, height = 50, palette = 'rently' } = request
+  const {
+    prompt,
+    width = 50,
+    height = 50,
+    floorPalette = 'ground',
+    objectPalettes = ['kenney_city', 'kenney_buildings', 'village']
+  } = request
 
-  // Get available sprites
-  const allSprites = getAllSprites()
-  const floorTiles = getFloorTiles().filter(s => !palette || s.palette === palette)
-  const objectTiles = getObjectTiles().filter(s => !palette || s.palette === palette)
+  // Get available sprites for floors
+  const floorTiles = getFloorTiles().filter(s => s.palette === floorPalette)
 
-  // Get available sprites for validation
-  const availableObjects = getObjectTiles().filter(s => s.palette === 'village')
+  // Get available sprites for objects from all selected palettes
+  const availableObjects = getObjectTiles().filter(s => objectPalettes.includes(s.palette as SheetName))
+
+  // Group objects by palette for better organization in prompt
+  const objectsByPalette: Record<string, typeof availableObjects> = {}
+  for (const obj of availableObjects) {
+    if (!objectsByPalette[obj.palette]) {
+      objectsByPalette[obj.palette] = []
+    }
+    objectsByPalette[obj.palette].push(obj)
+  }
 
   // Create a structured prompt for the AI
   const systemPrompt = `You are a virtual space designer. Generate a JSON map layout based on the user's description.
 
-Available floor tiles (${palette} palette):
-${floorTiles.slice(0, 20).map(t => `- ${t.name}`).join('\n')}
+Available floor tiles (${floorPalette} palette):
+${floorTiles.map(t => `- ${t.name}`).join('\n')}
 
-Available objects/furniture (village palette - ONLY USE THESE):
-${availableObjects.slice(0, 30).map(t => `- ${t.name} (${t.width}x${t.height})`).join('\n')}
+Available objects/furniture - ONLY USE THESE:
+${Object.entries(objectsByPalette).map(([palette, objects]) =>
+  `\n${palette.toUpperCase()} PALETTE (${objects.length} objects):
+${objects.map(t => `- ${t.name} (${t.width}x${t.height}px)`).join('\n')}`
+).join('\n')}
 
 IMPORTANT: You must ONLY use sprites from the lists above. Do not make up sprite names!
+When referencing objects in your JSON, use ONLY the sprite name (e.g., "box", "citytiles_045"), not the palette prefix.
 
 You must respond with valid JSON only. Use this exact format:
 {
@@ -123,7 +141,7 @@ Rules:
   try {
     if (!OPENAI_API_KEY) {
       console.warn('OpenAI API key not found, using fallback generation')
-      return generateFallbackMap(prompt, width, height, palette)
+      return generateFallbackMap(prompt, width, height, floorPalette)
     }
 
     // Call OpenAI Chat API
@@ -169,20 +187,20 @@ Rules:
     } catch (e) {
       console.error('Failed to parse AI response:', aiResponse)
       // Fallback to a simple generated map
-      return generateFallbackMap(prompt, width, height, palette)
+      return generateFallbackMap(prompt, width, height, floorPalette)
     }
 
     // Convert AI layout to RealmData format
-    return convertAILayoutToRealmData(layoutData, palette)
+    return convertAILayoutToRealmData(layoutData, floorPalette, objectPalettes)
 
   } catch (error) {
     console.error('AI map generation error:', error)
     // Fallback to procedural generation
-    return generateFallbackMap(prompt, width, height, palette)
+    return generateFallbackMap(prompt, width, height, floorPalette)
   }
 }
 
-function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData {
+function convertAILayoutToRealmData(layout: any, floorPalette: SheetName, objectPalettes: SheetName[]): RealmData {
   const tilemap: Record<string, any> = {}
 
   // Process each room
@@ -191,9 +209,9 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
     const requestedFloor = room.floorTile || 'light_solid_grass'
     let floorTile = requestedFloor
 
-    if (!isSpriteAvailable(palette, requestedFloor)) {
-      console.warn(`Floor tile '${requestedFloor}' not found in ${palette} palette, trying to find alternative...`)
-      const alternative = findClosestAvailableSprite(palette, requestedFloor)
+    if (!isSpriteAvailable(floorPalette, requestedFloor)) {
+      console.warn(`Floor tile '${requestedFloor}' not found in ${floorPalette} palette, trying to find alternative...`)
+      const alternative = findClosestAvailableSprite(floorPalette, requestedFloor)
       if (alternative) {
         floorTile = alternative
         console.log(`Using '${alternative}' instead of '${requestedFloor}'`)
@@ -208,7 +226,7 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
     for (let x = room.x; x < room.x + room.width; x++) {
       for (let y = room.y; y < room.y + room.height; y++) {
         const key = `${x}, ${y}`
-        tilemap[key] = { floor: `${palette}-${floorTile}` }
+        tilemap[key] = { floor: `${floorPalette}-${floorTile}` }
 
         // Add walls at perimeter
         if (
@@ -222,16 +240,31 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
       }
     }
 
-    // Place objects (use village palette for objects)
+    // Place objects - check across all allowed palettes
     for (const obj of room.objects || []) {
-      // Validate object sprite
-      if (!isSpriteAvailable('village', obj.name)) {
-        console.warn(`Object '${obj.name}' not found in village palette, trying to find alternative...`)
-        const alternative = findClosestAvailableSprite('village', obj.name)
-        if (alternative) {
-          console.log(`Using '${alternative}' instead of '${obj.name}'`)
-          obj.name = alternative
-        } else {
+      // Find which palette contains this sprite
+      let foundPalette: SheetName | null = null
+      for (const palette of objectPalettes) {
+        if (isSpriteAvailable(palette, obj.name)) {
+          foundPalette = palette
+          break
+        }
+      }
+
+      if (!foundPalette) {
+        console.warn(`Object '${obj.name}' not found in any palette, trying to find alternative...`)
+        // Try to find alternative in any of the allowed palettes
+        for (const palette of objectPalettes) {
+          const alternative = findClosestAvailableSprite(palette, obj.name)
+          if (alternative) {
+            console.log(`Using '${alternative}' from ${palette} instead of '${obj.name}'`)
+            obj.name = alternative
+            foundPalette = palette
+            break
+          }
+        }
+
+        if (!foundPalette) {
           console.warn(`No alternative found for '${obj.name}', skipping object placement`)
           continue // Skip this object
         }
@@ -239,7 +272,7 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
 
       const key = `${obj.x}, ${obj.y}`
       if (tilemap[key]) {
-        tilemap[key].object = `village-${obj.name}`
+        tilemap[key].object = `${foundPalette}-${obj.name}`
         tilemap[key].impassable = true
       }
     }
