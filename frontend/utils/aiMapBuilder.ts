@@ -158,11 +158,11 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
       }
     }
 
-    // Place objects
+    // Place objects (use village palette for objects)
     for (const obj of room.objects || []) {
       const key = `${obj.x}, ${obj.y}`
       if (tilemap[key]) {
-        tilemap[key].object = `${palette}-${obj.name}`
+        tilemap[key].object = `village-${obj.name}`
         tilemap[key].impassable = true
       }
     }
@@ -194,7 +194,7 @@ function generateFallbackMap(prompt: string, width: number, height: number, pale
   for (let x = startX; x < startX + roomWidth; x++) {
     for (let y = startY; y < startY + roomHeight; y++) {
       const key = `${x}, ${y}`
-      tilemap[key] = { floor: `${palette}-wood_floor` }
+      tilemap[key] = { floor: `${palette}-light_solid_grass` }
 
       if (
         x === startX ||

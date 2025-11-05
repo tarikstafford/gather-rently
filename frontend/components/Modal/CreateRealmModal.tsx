@@ -57,7 +57,7 @@ const CreateRealmModal:React.FC = () => {
                 toast.info('AI is designing your space...')
                 realmData.map_data = await generateMapWithAI({
                     prompt: aiPrompt,
-                    palette: 'village'
+                    palette: 'ground'
                 })
             }
             // blank map will have no map_data

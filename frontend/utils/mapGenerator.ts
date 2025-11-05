@@ -30,16 +30,16 @@ const DEFAULT_CONFIG: GeneratorConfig = {
   numRooms: 6,
   roomMinSize: 5,
   roomMaxSize: 12,
-  palette: 'village'
+  palette: 'ground'
 }
 
-// Floor tiles by palette
+// Floor tiles by palette (using actual floor layer tiles)
 const FLOOR_TILES: Record<string, string[]> = {
-  ground: ['light_solid_grass', 'detailed_grass', 'normal_solid_grass'],
+  ground: ['light_solid_grass', 'detailed_grass', 'normal_solid_grass', 'vibrant_solid_grass'],
   grasslands: ['grass', 'grass_flowers', 'grass_detail'],
-  village: ['wood_floor', 'stone_floor', 'brick_floor'],
+  village: ['light_solid_grass', 'detailed_grass', 'normal_solid_grass'], // Village has no floor tiles, use ground
   city: ['light_concrete', 'dark_concrete'],
-  rently: ['wood_floor', 'stone_floor', 'brick_floor']
+  rently: ['light_solid_grass', 'detailed_grass', 'normal_solid_grass']
 }
 
 // Objects/furniture by room type (using village palette sprites)
@@ -158,7 +158,8 @@ function placeRoomObjects(
     const key = `${x}, ${y}`
 
     if (tilemap[key] && !tilemap[key].object) {
-      tilemap[key].object = `${palette}-${obj}`
+      // Always use village palette for objects since ground has no objects
+      tilemap[key].object = `village-${obj}`
       tilemap[key].impassable = true
     }
   }
@@ -231,6 +232,6 @@ export function generateRentlyOffice(): RealmData {
     numRooms: 8,
     roomMinSize: 6,
     roomMaxSize: 14,
-    palette: 'village'
+    palette: 'ground'
   })
 }
