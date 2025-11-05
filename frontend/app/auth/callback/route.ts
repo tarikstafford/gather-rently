@@ -10,8 +10,13 @@ export async function GET(request: Request) {
   const origin = requestUrl.origin;
 
   if (code) {
-    const supabase = createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const supabase = await createClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      console.error('Auth callback error:', error);
+      return NextResponse.redirect(`${origin}/signin?error=${encodeURIComponent(error.message)}`);
+    }
   }
 
   // URL to redirect to after sign up process completes
