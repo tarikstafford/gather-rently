@@ -240,6 +240,7 @@ export class PlayApp extends App {
     private setUpKeyboardEvents = () => {
         document.addEventListener('keydown', this.keydown)
         document.addEventListener('keyup', this.keyup)
+        document.addEventListener('wheel', this.onWheel, { passive: false })
     }
 
     private keydown = (event: KeyboardEvent) => {
@@ -250,6 +251,28 @@ export class PlayApp extends App {
 
     private keyup = (event: KeyboardEvent) => {
         this.keysDown = this.keysDown.filter((key) => key !== event.key)
+    }
+
+    private onWheel = (event: WheelEvent) => {
+        if (this.disableInput) return
+
+        event.preventDefault()
+
+        // Zoom in/out based on wheel direction
+        const zoomSpeed = 0.1
+        const minScale = 0.5
+        const maxScale = 3.0
+
+        if (event.deltaY < 0) {
+            // Scroll up - zoom in
+            this.scale = Math.min(this.scale + zoomSpeed, maxScale)
+        } else {
+            // Scroll down - zoom out
+            this.scale = Math.max(this.scale - zoomSpeed, minScale)
+        }
+
+        this.setScale(this.scale)
+        this.moveCameraToPlayer()
     }
 
     public teleportIfOnTeleportSquare = (x: number, y: number) => {
@@ -479,6 +502,7 @@ export class PlayApp extends App {
         this.removeSignalListeners()
         document.removeEventListener('keydown', this.keydown)
         document.removeEventListener('keyup', this.keyup)
+        document.removeEventListener('wheel', this.onWheel)
     }
 
     public destroy() {
