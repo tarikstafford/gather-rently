@@ -42,14 +42,14 @@ const FLOOR_TILES: Record<string, string[]> = {
   rently: ['light_solid_grass', 'detailed_grass', 'normal_solid_grass']
 }
 
-// Objects/furniture by room type (using village palette sprites)
+// Objects/furniture by room type (using sprites that actually exist in village palette)
 const ROOM_OBJECTS: Record<RoomType, string[]> = {
-  office: ['table', 'chair_down', 'bookshelf', 'potted_plant'],
-  meeting: ['table', 'chair_down', 'chair_up', 'chair_left', 'chair_right'],
-  lounge: ['chair_down', 'potted_plant', 'table'],
-  meditation: ['chair_down', 'potted_plant'],
-  music: ['table', 'chair_down'],
-  kitchen: ['table', 'chair_down', 'barrel']
+  office: ['crate', 'box', 'small_crate'],
+  meeting: ['crate', 'box'],
+  lounge: ['crate', 'box'],
+  meditation: ['box'],
+  music: ['crate', 'box'],
+  kitchen: ['crate', 'box', 'small_crate']
 }
 
 function randomInt(min: number, max: number): number {
