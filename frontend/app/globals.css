@@ -1,10 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --dark-plum: #301064;
+    --plum: #553081;
+    --plum-stain: #E1CFFF;
+    --white-plum: #FAF6FF;
+    --dolphin-gray: #7A86A9;
+    --gray-100: #111010;
+    --gray-90: #545454;
+    --gray-75: #AFAFAF;
+    --gray-50: #EDEDED;
+    --gray-25: #F9F9F9;
+    --red: #E24949;
+    --sweet-mint-100: #11BB8D;
+    --sweet-mint-75: #B3E3BD;
+    --sweet-mint-50: #D9F2DE;
+    --sweet-mint-25: #F3FFF6;
+}
+
 html {
-    background: #282D4E;
-    color: white;
+    background: #FAF6FF;
+    color: #111010;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Archivo', sans-serif;
 }
 
 .transparent-scrollbar::-webkit-scrollbar {
@@ -61,11 +86,15 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .gradient {
-    background-image: linear-gradient(#202540, #252c5d 42%, #3a3dab);
+    background: linear-gradient(135deg, #553081 0%, #301064 100%);
 }
 
 .dark-gradient {
-    background-image: linear-gradient(#111111, #202437 42%, #323862);
+    background: linear-gradient(135deg, #301064 0%, #111010 100%);
+}
+
+.mint-gradient {
+    background: linear-gradient(135deg, #DBF5F0 0%, #40D9B0 100%);
 }
 
 .animate-colors {

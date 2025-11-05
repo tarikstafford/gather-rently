@@ -1,36 +1,76 @@
 'use client'
 import AnimatedCharacter from './play/SkinMenu/AnimatedCharacter'
-import Link from 'next/link'
-import BasicButton from '@/components/BasicButton'
-import { Code } from '@phosphor-icons/react'
+import { createClient } from '@/utils/supabase/client'
 
 export default function Index() {
+  const signInWithGoogle = async () => {
+    const supabase = createClient()
+    const redirectUrl = typeof window !== 'undefined'
+      ? `${window.location.origin}/auth/callback`
+      : '/auth/callback'
+
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl
+      }
+    })
+  }
+
   return (
-    <div className='w-full grid place-items-center h-screen gradient p-4 relative'>
-      <div className='max-w-[600px] flex flex-col items-center'>
-        <div>
-          <h1 className='font-semibold text-3xl'>Welcome to My Gather Clone!</h1>   
-          <p className='w-full text-xl my-6'>
-            This project is a functional recreation of the core features of Gather, 
-            built as a portfolio piece to demonstrate my technical skills and passion for virtual spaces.
-          </p>
-        </div>
-        <div className='flex flex-col items-center justify-center'>
-          <Link href='/app' >
-            <BasicButton>
-              Get Started
-            </BasicButton>
-          </Link>
-          <span className='mt-4 text-sm'>or watch a demo <a href="https://www.youtube.com/watch?v=AnhsC7Fmt20" target="_blank" rel="noopener noreferrer" className='underline'>here</a></span>
-        </div>
-        <div className='flex flex-row items-center justify-center mt-6 gap-8'>
-          <p className='text-sm'>created by <a href="https://www.trevdev.me/" target="_blank" rel="noopener noreferrer" className='font-bold underline'>trevdev</a></p>
-          <div className='inline-flex flex-row items-center justify-center gap-2'>
-            <a href='https://github.com/trevorwrightdev/gather-clone' target="_blank" rel="noopener noreferrer" className='text-sm underline font-bold'>see the code</a>
-            <Code className='w-4 h-4'/>
+    <div className='w-full min-h-screen gradient p-6 md:p-12 flex items-center justify-center'>
+      <div className='max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center'>
+        {/* Left side - Content */}
+        <div className='flex flex-col space-y-8 text-white'>
+          <div className='space-y-4'>
+            <h1 className='font-bold text-5xl md:text-6xl leading-tight'>
+              Welcome to <span className='text-[#E1CFFF]'>Rently.sg</span>
+            </h1>
+            <p className='text-xl md:text-2xl text-[#E1CFFF] leading-relaxed'>
+              Your digital gathering space for seamless collaboration
+            </p>
+            <p className='text-lg text-white/90 leading-relaxed max-w-xl'>
+              Connect with your team in immersive virtual spaces. Rently makes remote collaboration feel natural,
+              trustworthy and simple — just the way it should be.
+            </p>
+          </div>
+
+          <div className='flex flex-col sm:flex-row gap-4 items-start'>
+            <button
+              onClick={signInWithGoogle}
+              className='px-8 py-4 bg-white text-[#301064] rounded-lg font-semibold text-lg hover:bg-[#E1CFFF] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-3'
+            >
+              <img src='/google-logo.png' alt="Google logo" className='h-6' />
+              Sign in with Google
+            </button>
+          </div>
+
+          <div className='flex flex-wrap gap-6 text-sm text-white/70 pt-4'>
+            <div className='flex items-center gap-2'>
+              <div className='w-2 h-2 bg-[#11BB8D] rounded-full'></div>
+              <span>Secure & Private</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <div className='w-2 h-2 bg-[#11BB8D] rounded-full'></div>
+              <span>Easy to Use</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <div className='w-2 h-2 bg-[#11BB8D] rounded-full'></div>
+              <span>Made in Singapore</span>
+            </div>
           </div>
         </div>
-        <AnimatedCharacter src='/sprites/characters/Character_009.png'/>
+
+        {/* Right side - Character */}
+        <div className='flex items-center justify-center'>
+          <div className='relative'>
+            <div className='absolute inset-0 bg-[#E1CFFF]/20 rounded-full blur-3xl'></div>
+            <AnimatedCharacter
+              src='/sprites/characters/Character_009.png'
+              className='w-48 h-48 md:w-64 md:h-64 relative z-10'
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

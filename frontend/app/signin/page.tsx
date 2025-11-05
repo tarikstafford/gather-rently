@@ -6,10 +6,14 @@ export default function Login() {
 
     const signInWithGoogle = async () => {
         const supabase = createClient()
+        const redirectUrl = typeof window !== 'undefined'
+            ? `${window.location.origin}/auth/callback`
+            : '/auth/callback'
+
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: process.env.NEXT_PUBLIC_BASE_URL + '/auth/callback'
+                redirectTo: redirectUrl
             }
         })
     }
