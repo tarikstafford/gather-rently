@@ -30,7 +30,7 @@ const DEFAULT_CONFIG: GeneratorConfig = {
   numRooms: 6,
   roomMinSize: 5,
   roomMaxSize: 12,
-  palette: 'rently'
+  palette: 'village'
 }
 
 // Floor tiles by palette
@@ -38,18 +38,18 @@ const FLOOR_TILES: Record<string, string[]> = {
   ground: ['light_solid_grass', 'detailed_grass', 'normal_solid_grass'],
   grasslands: ['grass', 'grass_flowers', 'grass_detail'],
   village: ['wood_floor', 'stone_floor', 'brick_floor'],
-  city: ['concrete', 'tile_floor', 'marble'],
-  rently: ['white_plum_floor', 'plum_carpet', 'plum_carpet']
+  city: ['light_concrete', 'dark_concrete'],
+  rently: ['wood_floor', 'stone_floor', 'brick_floor']
 }
 
-// Objects/furniture by room type
+// Objects/furniture by room type (using village palette sprites)
 const ROOM_OBJECTS: Record<RoomType, string[]> = {
-  office: ['modern_desk', 'ergonomic_chair', 'large_plant', 'whiteboard'],
-  meeting: ['meeting_table_4', 'ergonomic_chair', 'whiteboard'],
-  lounge: ['modern_sofa', 'large_plant', 'coffee_machine'],
-  meditation: ['meditation_cushion', 'yoga_mat', 'large_plant'],
-  music: ['acoustic_guitar', 'keyboard_synth'],
-  kitchen: ['coffee_machine', 'refrigerator']
+  office: ['table', 'chair_down', 'bookshelf', 'potted_plant'],
+  meeting: ['table', 'chair_down', 'chair_up', 'chair_left', 'chair_right'],
+  lounge: ['chair_down', 'potted_plant', 'table'],
+  meditation: ['chair_down', 'potted_plant'],
+  music: ['table', 'chair_down'],
+  kitchen: ['table', 'chair_down', 'barrel']
 }
 
 function randomInt(min: number, max: number): number {
@@ -126,7 +126,7 @@ function createHallway(
   for (let x = minX; x <= maxX; x++) {
     const key = `${x}, ${midY}`
     if (!tilemap[key]) {
-      tilemap[key] = { floor: `${palette}:${floorTile}` }
+      tilemap[key] = { floor: `${palette}-${floorTile}` }
     }
   }
 
@@ -136,7 +136,7 @@ function createHallway(
   for (let y = minY; y <= maxY; y++) {
     const key = `${midX}, ${y}`
     if (!tilemap[key]) {
-      tilemap[key] = { floor: `${palette}:${floorTile}` }
+      tilemap[key] = { floor: `${palette}-${floorTile}` }
     }
   }
 }
@@ -158,7 +158,7 @@ function placeRoomObjects(
     const key = `${x}, ${y}`
 
     if (tilemap[key] && !tilemap[key].object) {
-      tilemap[key].object = `${palette}:${obj}`
+      tilemap[key].object = `${palette}-${obj}`
       tilemap[key].impassable = true
     }
   }
@@ -178,7 +178,7 @@ export function generateRandomMap(userConfig?: Partial<GeneratorConfig>): RealmD
     for (let x = room.x; x < room.x + room.width; x++) {
       for (let y = room.y; y < room.y + room.height; y++) {
         const key = `${x}, ${y}`
-        tilemap[key] = { floor: `${palette}:${floorTile}` }
+        tilemap[key] = { floor: `${palette}-${floorTile}` }
 
         // Add walls (make perimeter impassable)
         if (
@@ -231,6 +231,6 @@ export function generateRentlyOffice(): RealmData {
     numRooms: 8,
     roomMinSize: 6,
     roomMaxSize: 14,
-    palette: 'rently'
+    palette: 'village'
   })
 }

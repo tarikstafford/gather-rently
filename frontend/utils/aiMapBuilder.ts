@@ -144,7 +144,7 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
     for (let x = room.x; x < room.x + room.width; x++) {
       for (let y = room.y; y < room.y + room.height; y++) {
         const key = `${x}, ${y}`
-        tilemap[key] = { floor: `${palette}:${room.floorTile || 'white_plum_floor'}` }
+        tilemap[key] = { floor: `${palette}-${room.floorTile || 'white_plum_floor'}` }
 
         // Add walls at perimeter
         if (
@@ -162,7 +162,7 @@ function convertAILayoutToRealmData(layout: any, palette: SheetName): RealmData 
     for (const obj of room.objects || []) {
       const key = `${obj.x}, ${obj.y}`
       if (tilemap[key]) {
-        tilemap[key].object = `${palette}:${obj.name}`
+        tilemap[key].object = `${palette}-${obj.name}`
         tilemap[key].impassable = true
       }
     }
@@ -194,7 +194,7 @@ function generateFallbackMap(prompt: string, width: number, height: number, pale
   for (let x = startX; x < startX + roomWidth; x++) {
     for (let y = startY; y < startY + roomHeight; y++) {
       const key = `${x}, ${y}`
-      tilemap[key] = { floor: `${palette}:white_plum_floor` }
+      tilemap[key] = { floor: `${palette}-wood_floor` }
 
       if (
         x === startX ||
