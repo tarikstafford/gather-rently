@@ -9,6 +9,7 @@ import DeleteRealmModal from './DeleteRealmModal'
 import FailedToConnectModal from './FailedToConnectModal'
 import SkinMenu from '@/app/play/SkinMenu/SkinMenu'
 import DisconnectedModal from './DisconnectedModal'
+import ChangeCharacterModal from './ChangeCharacterModal'
 import { useModal } from '@/app/hooks/useModal'
 
 const ModalParent:React.FC = () => {
@@ -25,6 +26,7 @@ const ModalParent:React.FC = () => {
                     <DeleteRoomModal />
                     <TeleportModal />
                     <DeleteRealmModal />
+                    <ChangeCharacterModal />
                     <SkinMenu />
                 </>
             )}
