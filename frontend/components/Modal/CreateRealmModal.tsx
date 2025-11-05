@@ -66,17 +66,17 @@ const CreateRealmModal:React.FC = () => {
     return (
         <Modal open={modal === 'Create Realm'} closeOnOutsideClick>
             <div className='flex flex-col items-center p-8 w-[420px] gap-6'>
-                <h1 className='text-3xl font-bold text-dark-plum'>Create a Space</h1>
-                <BasicInput label={'Space Name'} className='w-full' value={realmName} onChange={onChange} maxLength={32}/>
+                <h1 className='text-3xl font-bold text-white'>Create a Space</h1>
+                <BasicInput label={'Space Name'} className='w-full bg-dark-plum border-dark-plum text-white placeholder:text-plum-stain' value={realmName} onChange={onChange} maxLength={32}/>
                 <div className='flex items-center gap-3 w-full'>
                     <input
                         type="checkbox"
                         id="useDefaultMap"
                         checked={useDefaultMap}
                         onChange={(e) => setUseDefaultMap(e.target.checked)}
-                        className='w-4 h-4 accent-plum'
+                        className='w-4 h-4 accent-sweet-mint'
                     />
-                    <label htmlFor="useDefaultMap" className='text-dolphin-gray'>Use starter map</label>
+                    <label htmlFor="useDefaultMap" className='text-plum-stain'>Use starter map</label>
                 </div>
                 <BasicButton disabled={realmName.length <= 0 || loading} onClick={createRealm} className='text-lg w-full'>
                     Create Space

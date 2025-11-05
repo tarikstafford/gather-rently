@@ -55,8 +55,13 @@ const PixiApp:React.FC<PixiAppProps> = ({ className, mapData, username, access_t
     }, [])
 
     return (
-        <div id='app-container' className={`overflow-hidden ${className}`}>
-            
+        <div
+            id='app-container'
+            className={`overflow-hidden ${className} cursor-pointer`}
+            tabIndex={0}
+            onClick={(e) => (e.currentTarget as HTMLDivElement).focus()}
+        >
+
         </div>
     )
 }

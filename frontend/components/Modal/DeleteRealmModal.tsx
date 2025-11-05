@@ -51,11 +51,11 @@ const DeleteRealmModal:React.FC<DeleteRealmModalProps> = () => {
     return (
         <Modal open={modal === 'Delete Realm'} closeOnOutsideClick>
             <div className='p-8 flex flex-col items-center gap-6 w-[420px]'>
-                <h1 className='text-2xl font-bold text-dark-plum text-center'>Delete Space</h1>
-                <p className='text-center text-dolphin-gray'>Are you sure you want to delete <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span>? This action cannot be undone!</p>
+                <h1 className='text-2xl font-bold text-white text-center'>Delete Space</h1>
+                <p className='text-center text-plum-stain'>Are you sure you want to delete <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span>? This action cannot be undone!</p>
                 <div className='w-full'>
-                    <p className='text-sm text-dolphin-gray mb-2'>Type <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span> to confirm</p>
-                    <BasicInput className='w-full' onChange={onChange} value={input}/>
+                    <p className='text-sm text-plum-stain mb-2'>Type <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span> to confirm</p>
+                    <BasicInput className='w-full bg-dark-plum border-dark-plum text-white placeholder:text-plum-stain' onChange={onChange} value={input}/>
                 </div>
                 <button className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all ${loading ? 'pointer-events-none opacity-50' : ''} ${getDisabled() ? 'opacity-50 pointer-events-none' : ''} bg-red-alert hover:bg-red-600 shadow-sm hover:shadow-md`} disabled={getDisabled()} onClick={onClickDelete}>
                     Delete Space

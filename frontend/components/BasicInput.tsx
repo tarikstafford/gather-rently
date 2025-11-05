@@ -17,13 +17,13 @@ const BasicInput:React.FC<BasicInputProps> = ({ label, className, value, onChang
 
     return (
         <div>
-        {label && <label className="block text-sm font-medium leading-6 text-dark-plum mb-2">
+        {label && <label className="block text-sm font-medium leading-6 text-white mb-2">
             {label}
         </label>}
         <div>
             <input
                 type={type}
-                className={`rounded-lg border-2 border-gray-50 py-2.5 px-4 text-dark-plum shadow-sm placeholder:text-dolphin-gray outline-none focus:border-plum focus:ring-2 focus:ring-plum-stain transition-all text-base leading-6 ${className}`}
+                className={`rounded-lg border-2 py-2.5 px-4 shadow-sm outline-none transition-all text-base leading-6 ${className}`}
                 autoComplete='off'
                 placeholder=""
                 value={value}

@@ -87,22 +87,22 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
                 </div>
             </Link>
             <div className='mt-3 flex flex-row justify-between items-center'>
-                <p className='text-base font-semibold text-dark-plum'>{name}</p>
+                <p className='text-base font-semibold text-white'>{name}</p>
                 {!shared && (
                     <div className='flex flex-row gap-1'>
-                        <LinkIcon className='h-8 w-8 cursor-pointer hover:bg-plum-stain text-plum rounded-md p-1.5 animate-colors' onClick={copyShareLink}/>
+                        <LinkIcon className='h-8 w-8 cursor-pointer hover:bg-plum text-plum-stain rounded-md p-1.5 animate-colors' onClick={copyShareLink}/>
                     <div ref={dotsRef}>
-                        <DotsThreeVertical weight='bold' className='h-8 w-8 cursor-pointer hover:bg-plum-stain text-plum rounded-md p-1.5 animate-colors' onClick={handleDotsClick}/>
+                        <DotsThreeVertical weight='bold' className='h-8 w-8 cursor-pointer hover:bg-plum text-plum-stain rounded-md p-1.5 animate-colors' onClick={handleDotsClick}/>
                     </div>
                 </div>)}
             </div>
             {showMenu && (
-                <div className='absolute w-40 rounded-lg bg-white shadow-xl right-0 flex flex-col z-10 border border-gray-50 overflow-hidden' ref={menuRef}>
-                    <button className='py-3 px-4 w-full hover:bg-plum-stain text-dark-plum font-medium text-left transition-colors' onClick={() => router.push(`/editor/${id}`)}>
+                <div className='absolute w-40 rounded-lg bg-plum shadow-xl right-0 flex flex-col z-10 border border-dark-plum overflow-hidden' ref={menuRef}>
+                    <button className='py-3 px-4 w-full hover:bg-dark-plum text-white font-medium text-left transition-colors' onClick={() => router.push(`/editor/${id}`)}>
                         Edit Map
                     </button>
-                    <button className='py-3 px-4 w-full hover:bg-plum-stain text-dark-plum font-medium text-left transition-colors' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
-                    <button className='py-3 px-4 w-full hover:bg-red-alert hover:text-white text-red-alert font-medium text-left transition-colors' onClick={handleDelete}>Delete</button>
+                    <button className='py-3 px-4 w-full hover:bg-dark-plum text-white font-medium text-left transition-colors' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
+                    <button className='py-3 px-4 w-full hover:bg-red-alert text-red-alert hover:text-white font-medium text-left transition-colors' onClick={handleDelete}>Delete</button>
                 </div>
             )}
         </div>

@@ -60,7 +60,7 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
         <>
             {/* Mobile View */}
             <div className='flex flex-col items-center p-4 gap-2 sm:hidden'>
-                {realms.length === 0 && <p className='text-center text-dolphin-gray'>You have no spaces you can join. Create one on desktop to get started!</p>}
+                {realms.length === 0 && <p className='text-center text-plum-stain'>You have no spaces you can join. Create one on desktop to get started!</p>}
                 {realms.map((realm, index) => {
 
                     function selectRealm() {
@@ -68,7 +68,7 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
                     }
 
                     return (
-                        <BasicButton key={realm.id} className={`w-full h-14 border-2 border-transparent flex flex-row items-center justify-between ${selectedRealm?.id === realm.id ? 'border-plum' : ''}`} onClick={selectRealm}>
+                        <BasicButton key={realm.id} className={`w-full h-14 border-2 border-transparent flex flex-row items-center justify-between ${selectedRealm?.id === realm.id ? 'border-white' : ''}`} onClick={selectRealm}>
                             <p className='text-white text-lg text-left font-semibold'>{realm.name}</p>
                             {playerCounts[index] !== undefined && <div className='rounded-full grid place-items-center w-9 h-9 font-bold bg-sweet-mint text-white text-sm'>
                                 {playerCounts[index]}
@@ -76,7 +76,7 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
                         </BasicButton>
                     )
                 })}
-                <div className='fixed bottom-0 w-full bg-white-plum border-t border-gray-50 grid place-items-center p-4 shadow-lg'>
+                <div className='fixed bottom-0 w-full bg-dark-plum border-t border-plum grid place-items-center p-4 shadow-lg'>
                      <BasicButton className='w-[90%] text-lg' disabled={selectedRealm === null} onClick={() => router.push(getLink())}>
                         Join Space
                     </BasicButton>
@@ -85,7 +85,7 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
 
             {/* Desktop View */}
             <div className='flex-col items-center w-full hidden sm:flex'>
-                {realms.length === 0 && <p className='text-center text-dolphin-gray text-lg'>You have no spaces you can join. Create a space to get started!</p>}
+                {realms.length === 0 && <p className='text-center text-plum-stain text-lg'>You have no spaces you can join. Create a space to get started!</p>}
                 <div className='hidden sm:grid grid-cols-2 md:grid-cols-3 gap-8 w-full'>
                     {realms.map((realm, index) => {
                         return (
