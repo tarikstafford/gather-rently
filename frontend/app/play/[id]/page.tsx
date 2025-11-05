@@ -17,12 +17,45 @@ export default async function Play({ params, searchParams }: { params: { id: str
         return redirect('/signin')
     }
     const { data, error } = !searchParams.shareId ? await supabase.from('realms').select('map_data, owner_id, name').eq('id', params.id).single() : await getPlayRealmData(session.access_token, searchParams.shareId)
-    const { data: profile, error: profileError } = await supabase.from('profiles').select('skin').eq('id', user.id).single()
-    // Show not found page if no data is returned
-    if (!data || !profile) {
-        const message = error?.message || profileError?.message
 
+    // Show not found page if realm not found
+    if (!data) {
+        const message = error?.message || 'Realm not found'
+        console.error('Realm error:', error)
         return <NotFound specialMessage={message}/>
+    }
+
+    const { data: profile, error: profileError } = await supabase.from('profiles').select('skin').eq('id', user.id).single()
+
+    // If profile doesn't exist, create one with default skin
+    if (!profile) {
+        console.log('Profile not found, creating one...')
+        const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({ id: user.id, skin: '/sprites/characters/Character_001.png', visited_realms: [] })
+            .select('skin')
+            .single()
+
+        if (createError) {
+            console.error('Profile creation error:', createError)
+            return <NotFound specialMessage={createError.message}/>
+        }
+
+        // Use the newly created profile
+        const skin = newProfile?.skin || '/sprites/characters/Character_001.png'
+
+        return (
+            <PlayClient
+                mapData={data.map_data}
+                username={formatEmailToName(user.user_metadata.email)}
+                access_token={session.access_token}
+                realmId={params.id}
+                uid={user.id}
+                shareId={searchParams.shareId || ''}
+                initialSkin={skin}
+                name={data.name}
+            />
+        )
     }
 
     const realm = data
