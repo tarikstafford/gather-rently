@@ -23,11 +23,11 @@ export default async function Manage({ params }: { params: { id: string } }) {
     const realm = data
 
     return (
-        <div>
-            <ManageChild 
-                realmId={realm.id} 
-                startingShareId={realm.share_id} 
-                startingOnlyOwner={realm.only_owner} 
+        <div className='min-h-screen gradient'>
+            <ManageChild
+                realmId={realm.id}
+                startingShareId={realm.share_id}
+                startingOnlyOwner={realm.only_owner}
                 startingName={realm.name}
             />
         </div>

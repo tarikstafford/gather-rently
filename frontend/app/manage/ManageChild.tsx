@@ -94,15 +94,15 @@ const ManageChild:React.FC<ManageChildProps> = ({ realmId, startingShareId, star
     return (
         <div className='flex flex-col items-center pt-24'>
             <div className='flex flex-row gap-8 relative'>
-                <div className='flex flex-col h-[500px] w-[200px] border-white border-r-2 pr-4 gap-2'>
-                    <h1 className={`${selectedTab === 0 ? 'font-bold underline' : ''} cursor-pointer`} onClick={() => setSelectedTab(0)}>General</h1> 
-                    <h1 className={`${selectedTab === 1 ? 'font-bold underline' : ''} cursor-pointer`} onClick={() => setSelectedTab(1)}>Sharing Options</h1> 
+                <div className='flex flex-col h-[500px] w-[200px] border-plum-stain border-r-2 pr-4 gap-2'>
+                    <h1 className={`${selectedTab === 0 ? 'font-bold underline' : ''} cursor-pointer text-white`} onClick={() => setSelectedTab(0)}>General</h1>
+                    <h1 className={`${selectedTab === 1 ? 'font-bold underline' : ''} cursor-pointer text-white`} onClick={() => setSelectedTab(1)}>Sharing Options</h1>
                 </div>
                 <div className='flex flex-col w-[300px]'>
                     {selectedTab === 0 && (
                         <div className='flex flex-col gap-2'>
-                            Name
-                            <BasicInput value={name} onChange={onNameChange} maxLength={32}/>
+                            <label className='text-white'>Name</label>
+                            <BasicInput value={name} onChange={onNameChange} maxLength={32} className='bg-dark-plum border-dark-plum text-white'/>
                         </div>
                     )}
                     {selectedTab === 1 && (
@@ -117,7 +117,7 @@ const ManageChild:React.FC<ManageChildProps> = ({ realmId, startingShareId, star
                     )}
                     {selectedTab === 2 && (
                         <div className='flex flex-col gap-2'>
-                            
+
                         </div>
                     )}
                     </div>

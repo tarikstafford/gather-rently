@@ -50,7 +50,7 @@ const DeleteRealmModal:React.FC<DeleteRealmModalProps> = () => {
 
     return (
         <Modal open={modal === 'Delete Realm'} closeOnOutsideClick>
-            <div className='p-8 flex flex-col items-center gap-6 w-[420px]'>
+            <div className='p-8 flex flex-col items-center gap-6 w-full max-w-[420px]'>
                 <h1 className='text-2xl font-bold text-white text-center'>Delete Space</h1>
                 <p className='text-center text-plum-stain'>Are you sure you want to delete <span className='text-red-alert font-semibold select-none'>{realmToDelete.name}</span>? This action cannot be undone!</p>
                 <div className='w-full'>

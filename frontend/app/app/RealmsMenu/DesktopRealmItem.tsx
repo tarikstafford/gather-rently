@@ -52,6 +52,10 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
     }
 
     function copyShareLink() {
+        if (!shareId) {
+            toast.error('This realm does not have a share link. Please recreate it or contact support.')
+            return
+        }
         const shareUrl = `${window.location.origin}/play/${id}?shareId=${shareId}`
         navigator.clipboard.writeText(shareUrl)
         toast.success('Link copied!')

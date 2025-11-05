@@ -17,11 +17,11 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, skin, username, set
     const src = '/sprites/characters/Character_' + skin + '.png'
 
     return (
-        <main className='dark-gradient w-full h-screen flex flex-col items-center pt-28'>
-            <h1 className='text-4xl font-semibold'>Welcome to <span className='text-[#CAD8FF]'>{realmName}</span></h1>
+        <main className='gradient w-full h-screen flex flex-col items-center pt-28'>
+            <h1 className='text-4xl font-semibold text-white'>Welcome to <span className='text-sweet-mint'>{realmName}</span></h1>
             <section className='flex flex-row mt-32 items-center gap-24'>
                 <div className='flex flex-col items-center gap-4'>
-                    <div className='aspect-video w-[337px] h-[227px] bg-black rounded-xl border-2 border-[#3F4776] overflow-hidden'>
+                    <div className='aspect-video w-[337px] h-[227px] bg-dark-plum rounded-xl border-2 border-plum overflow-hidden'>
                         <LocalVideo/>
                     </div>
                     <MicAndCameraButtons/>
@@ -29,7 +29,7 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, skin, username, set
                 <div className='flex flex-col items-center gap-4'>
                     <div className='flex flex-row items-center'>
                         <AnimatedCharacter src={src} noAnimation/>
-                        <p className='relative top-4'>{username}</p>
+                        <p className='relative top-4 text-white'>{username}</p>
                     </div>
                     <BasicButton className='py-0 px-32 w-[250px]' onClick={() => setShowIntroScreen(false)}>
                         Join
@@ -46,7 +46,7 @@ function LocalVideo() {
     const { isCameraMuted, isMicMuted } = useVideoChat()
 
     return (
-        <div className='w-full h-full bg-[#111111] grid place-items-center relative'>
+        <div className='w-full h-full bg-dark-plum grid place-items-center relative'>
             <div id='local-video' className='w-full h-full'>
 
             </div>
@@ -54,7 +54,7 @@ function LocalVideo() {
                 {isMicMuted && isCameraMuted && <p>You are muted</p>}
                 {isCameraMuted && <p>Your camera is off</p>}
             </div>
-            {isMicMuted && !isCameraMuted && <p className='absolute bottom-2 right-3 select-none text-sm text-white bg-black bg-opacity-50 p-1 px-2 rounded-full'>
+            {isMicMuted && !isCameraMuted && <p className='absolute bottom-2 right-3 select-none text-sm text-white bg-dark-plum bg-opacity-80 p-1 px-2 rounded-full'>
                 You are muted
             </p>}
         </div>

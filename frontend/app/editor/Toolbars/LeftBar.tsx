@@ -64,7 +64,7 @@ const LeftBar:React.FC<LeftBarProps> = ({ tool, tileMode, selectTool, selectTile
     }, [])
 
     return (
-        <div className='w-[48px] bg-secondary flex flex-col items-center py-1 gap-2'>
+        <div className='w-[48px] bg-dark-plum flex flex-col items-center py-1 gap-2 border-r border-plum'>
             <ToolButton selected={tool === 'Hand'} label={'Hand'} onClick={() => selectTool('Hand')}>
                 <HandRaisedIcon className='h-8 w-8 text-white'/>
             </ToolButton>
@@ -77,25 +77,25 @@ const LeftBar:React.FC<LeftBarProps> = ({ tool, tileMode, selectTool, selectTile
             <ToolButton selected={tool === 'Eraser'} label={'Eraser'} onClick={() => selectTool('Eraser')}>
                 <Eraser className='h-8 w-8'/>
             </ToolButton>
-            <div className='w-full h-[2px] bg-black'/>
+            <div className='w-full h-[2px] bg-plum'/>
             <ToolButton selected={tileMode === 'Single'} label={'Single Tile'} onClick={() => selectTileMode('Single')}>
                 <Square className='h-8 w-8'/>
             </ToolButton>
             <ToolButton selected={tileMode === 'Rectangle'} label={'Rectangle'} onClick={() => selectTileMode('Rectangle')}>
                 <GridFour className='h-8 w-8'/>
             </ToolButton>
-            <div className='w-full h-[2px] bg-black'/>
+            <div className='w-full h-[2px] bg-plum'/>
             <ToolButton selected={false} onClick={toggleShowGizmos} label={'Toggle Special Tiles'} className={specialTile !== 'None' ? 'pointer-events-none text-gray-500' : ''}>
                 {showGizmos ? <EyeSlash className='h-8 w-8'/> : <Eye className='h-8 w-8'/>}
             </ToolButton>
-            <div className='w-full h-[2px] bg-black'/>
+            <div className='w-full h-[2px] bg-plum'/>
             <ToolButton selected={false} label={'Undo'} onClick={undo} disabled={!undoEnabled}>
                 <ArrowUUpLeft className='h-8 w-8'/>
             </ToolButton>
             <ToolButton selected={false} label={'Redo'} onClick={redo} disabled={!redoEnabled}>
                 <ArrowUUpRight className='h-8 w-8'/>
             </ToolButton>
-            <div className='w-full h-[2px] bg-black'/>
+            <div className='w-full h-[2px] bg-plum'/>
             {tool === 'Eraser' && (
                 <div className='flex flex-col gap-2'>
                     <ToolButton selected={eraserLayer === 'floor'} label={'Erase Floor'} onClick={() => selectEraserLayer('floor')}>

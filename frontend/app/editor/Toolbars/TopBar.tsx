@@ -75,8 +75,8 @@ const TopBar:React.FC<TopBarProps> = () => {
     }
 
     return (
-        <div className='w-full h-[48px] bg-secondary flex flex-row items-center p-2 border-b-2 border-black gap-2 relative'>
-            <div className='hover:bg-light-secondary animate-colors aspect-square grid place-items-center rounded-lg p-1'>
+        <div className='w-full h-[48px] bg-dark-plum flex flex-row items-center p-2 border-b-2 border-plum gap-2 relative'>
+            <div className='hover:bg-plum animate-colors aspect-square grid place-items-center rounded-lg p-1'>
                 <Link href={'/app'}>
                     <ArrowLeftEndOnRectangleIcon className='h-8 w-8 text-white'/>
                 </Link>
@@ -85,10 +85,10 @@ const TopBar:React.FC<TopBarProps> = () => {
                 Save
                 <FloppyDisk className='h-6 w-6'/>
             </BasicButton>
-            <p className='text-xs italic'>Saving will kick any players that are online.</p>
+            <p className='text-xs italic text-plum-stain'>Saving will kick any players that are online.</p>
             <div className='absolute right-12 xl:right-[475px] hidden lg:flex flex-row gap-2 items-center'>
-                {barWidth > 0.9 && <p className='text-xs italic text-red-500'>{barWidth >= 1 ? "You're out of space!" : "You're running out of space!"}</p>}
-                <div className='w-80 h-[12px] rounded-md border-white border-[1px] overflow-hidden'>
+                {barWidth > 0.9 && <p className='text-xs italic text-red-alert'>{barWidth >= 1 ? "You're out of space!" : "You're running out of space!"}</p>}
+                <div className='w-80 h-[12px] rounded-md border-plum-stain border-[1px] overflow-hidden'>
                     <div className={`${getBgColor()} h-full`} style={{
                         width: barWidth * 100 + '%'
                     }}/>

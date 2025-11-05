@@ -72,7 +72,7 @@ const ChangeCharacterModal: React.FC = () => {
 
     return (
         <Modal open={modal === 'Change Character'} closeOnOutsideClick>
-            <div className='flex flex-col items-center p-8 w-[500px] gap-6'>
+            <div className='flex flex-col items-center p-8 w-full max-w-[500px] gap-6'>
                 <h1 className='text-3xl font-bold text-white'>Choose Your Character</h1>
 
                 <div className='flex items-center justify-center gap-4'>
