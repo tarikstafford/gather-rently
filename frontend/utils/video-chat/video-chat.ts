@@ -7,11 +7,13 @@ export class VideoChat {
     private client: IAgoraRTCClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
     private microphoneTrack: IMicrophoneAudioTrack | null = null
     private cameraTrack: ICameraVideoTrack | null = null
+    private screenTrack: ICameraVideoTrack | null = null
     private currentChannel: string = ''
 
     private remoteUsers: { [uid: string]: IAgoraRTCRemoteUser } = {}
 
     private channelTimeout: NodeJS.Timeout | null = null
+    private isScreenSharing: boolean = false
 
     constructor() {
         AgoraRTC.setLogLevel(4)
@@ -149,6 +151,78 @@ export class VideoChat {
         
     }
 
+    public async startScreenShare() {
+        try {
+            // Stop camera if active
+            if (this.cameraTrack && this.client.connectionState === 'CONNECTED') {
+                await this.client.unpublish([this.cameraTrack])
+                this.cameraTrack.stop()
+            }
+
+            // Create screen track
+            this.screenTrack = await AgoraRTC.createScreenVideoTrack({
+                encoderConfig: {
+                    width: 1920,
+                    height: 1080,
+                    frameRate: 15,
+                    bitrateMax: 2000,
+                    bitrateMin: 1000
+                },
+                optimizationMode: "detail"
+            } as any, "auto")
+
+            // Publish screen track
+            if (this.client.connectionState === 'CONNECTED') {
+                await this.client.publish([this.screenTrack])
+            }
+
+            this.isScreenSharing = true
+            signal.emit('screen-share-started')
+
+            // Handle when user stops sharing via browser UI
+            this.screenTrack.on("track-ended", () => {
+                this.stopScreenShare()
+            })
+
+            return true
+        } catch (error) {
+            console.error('Failed to start screen share:', error)
+            signal.emit('screen-share-error', error)
+            return false
+        }
+    }
+
+    public async stopScreenShare() {
+        if (!this.screenTrack) return
+
+        try {
+            // Unpublish and stop screen track
+            if (this.client.connectionState === 'CONNECTED') {
+                await this.client.unpublish([this.screenTrack])
+            }
+            this.screenTrack.stop()
+            this.screenTrack.close()
+            this.screenTrack = null
+            this.isScreenSharing = false
+
+            // Restart camera if it was active before
+            if (this.cameraTrack) {
+                if (this.client.connectionState === 'CONNECTED') {
+                    await this.client.publish([this.cameraTrack])
+                }
+                this.cameraTrack.play('local-video')
+            }
+
+            signal.emit('screen-share-stopped')
+        } catch (error) {
+            console.error('Failed to stop screen share:', error)
+        }
+    }
+
+    public getScreenShareStatus() {
+        return this.isScreenSharing
+    }
+
     public destroy() {
         if (this.cameraTrack) {
             this.cameraTrack.stop()
@@ -158,8 +232,13 @@ export class VideoChat {
             this.microphoneTrack.stop()
             this.microphoneTrack.close()
         }
+        if (this.screenTrack) {
+            this.screenTrack.stop()
+            this.screenTrack.close()
+        }
         this.microphoneTrack = null
         this.cameraTrack = null
+        this.screenTrack = null
     }
 
     private createUniqueChannelId(realmId: string, channel: string): string {

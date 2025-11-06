@@ -6,6 +6,10 @@ const TeleporterSchema = z.object({
   y: z.number(),
 })
 
+const WhiteboardSchema = z.object({
+  id: z.string(),
+})
+
 const TileSchema = z.object({
   floor: z.string().optional(),
   above_floor: z.string().optional(),
@@ -13,6 +17,7 @@ const TileSchema = z.object({
   impassable: z.boolean().optional(),
   teleporter: TeleporterSchema.optional(),
   privateAreaId: z.string().optional(),
+  whiteboard: WhiteboardSchema.optional(),
 })
 
 const TileMapSchema = z.record(z.string().regex(/^(-?\d+), (-?\d+)$/), TileSchema)

@@ -228,10 +228,22 @@ export class PlayApp extends App {
 
     private clickEvents = () => {
         this.app.stage.on('pointerdown', (e: PIXI.FederatedPointerEvent) => {
-            if (this.player.frozen || this.disableInput) return  
+            if (this.player.frozen || this.disableInput) return
 
             const clickPosition = e.getLocalPosition(this.app.stage)
             const { x, y } = this.convertScreenToTileCoordinates(clickPosition.x, clickPosition.y)
+
+            // Check if clicking on a whiteboard
+            const tile = `${x}, ${y}` as TilePoint
+            const tileData = this.realmData.rooms[this.currentRoomIndex].tilemap[tile]
+            if (tileData?.whiteboard) {
+                signal.emit('open-whiteboard', {
+                    whiteboardId: tileData.whiteboard.id,
+                    realmId: this.realmId
+                })
+                return
+            }
+
             this.player.moveToTile(x, y)
             this.player.setMovementMode('mouse')
         })

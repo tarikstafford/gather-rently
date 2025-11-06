@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 export type Tool = 'None' | 'Hand' | 'ZoomIn' | 'ZoomOut' | 'Tile'  | 'Eraser'
 
-export type SpecialTile = 'None' | 'Impassable' | 'Teleport' | 'Spawn' | 'Private Area'
+export type SpecialTile = 'None' | 'Impassable' | 'Teleport' | 'Spawn' | 'Private Area' | 'Whiteboard'
 
 export type TileMode = 'Single' | 'Rectangle'
 
@@ -48,3 +48,11 @@ export type Coordinate = [number, number]
 export type AnimationState = 'idle_down' | 'idle_up' | 'idle_left' | 'idle_right' | 'walk_down' | 'walk_up' | 'walk_left' | 'walk_right'
 
 export type Direction = 'down' | 'up' | 'left' | 'right'
+
+export type WhiteboardData = {
+    id: string
+    x: number
+    y: number
+    canvasData: any // Excalidraw elements
+    updatedAt: string
+}
