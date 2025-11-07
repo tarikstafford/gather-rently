@@ -17,12 +17,13 @@ export default async function InvitePage({ params, searchParams }: InvitePagePro
         return redirect(`/play/${params.id}?shareId=${searchParams.shareId}`)
     }
 
-    // Fetch realm data to show preview using RPC function that bypasses RLS
+    // Fetch realm data - RLS policy allows anonymous reads for invite purposes
     const { data: realm, error } = await supabase
-        .rpc('get_realm_for_invite', {
-            realm_id: params.id,
-            share_id_param: searchParams.shareId
-        })
+        .from('realms')
+        .select('name, share_id, only_owner')
+        .eq('id', params.id)
+        .eq('share_id', searchParams.shareId)
+        .single()
 
     if (error || !realm) {
         // If no shareId or invalid invite, redirect to signin
