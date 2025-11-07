@@ -44,13 +44,23 @@ export async function generateMapWithPixelLab(options: AIMapWithPixelLabOptions)
     }
 
     try {
+        console.log('🎨 Starting PixelLab AI map generation...')
+
         // Step 1: Analyze the prompt to determine what custom sprites we need
+        console.log('Step 1: Analyzing prompt for tile requirements...')
         const tileRequirements = await analyzePromptForCustomTiles(prompt)
+        console.log(`Found ${tileRequirements.length} tile requirements:`, tileRequirements)
 
         // Step 2: Generate custom sprites using PixelLab
+        console.log('Step 2: Generating custom sprites with PixelLab...')
         const customSprites = await generateCustomSprites(tileRequirements)
+        console.log('Custom sprites generated:', {
+            floors: Object.keys(customSprites.floors).length,
+            objects: Object.keys(customSprites.objects).length
+        })
 
         // Step 3: Generate the map layout using AI with references to custom sprites
+        console.log('Step 3: Generating map layout with custom sprites...')
         const mapData = await generateMapLayoutWithCustomSprites(
             prompt,
             width,
@@ -58,11 +68,13 @@ export async function generateMapWithPixelLab(options: AIMapWithPixelLabOptions)
             customSprites,
             tileRequirements
         )
+        console.log('✅ PixelLab map generation complete!')
 
         return mapData
 
     } catch (error) {
-        console.error('PixelLab map generation failed, falling back to standard generation:', error)
+        console.error('❌ PixelLab map generation failed, falling back to standard generation:', error)
+        console.error('Error details:', error)
         // Fallback to standard generation if PixelLab fails
         return generateMapWithAI({
             prompt,

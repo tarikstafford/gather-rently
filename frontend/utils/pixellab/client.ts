@@ -26,8 +26,12 @@ export class PixelLabClient {
         this.apiKey = apiKey || process.env.NEXT_PUBLIC_PIXELLAB_API_KEY || ''
 
         if (!this.apiKey) {
+            console.error('❌ PixelLab API key not found!')
+            console.error('Please set NEXT_PUBLIC_PIXELLAB_API_KEY in your .env file')
             throw new Error('PixelLab API key is required. Set NEXT_PUBLIC_PIXELLAB_API_KEY environment variable.')
         }
+
+        console.log('✅ PixelLab API client initialized')
     }
 
     /**
