@@ -19,6 +19,7 @@ export async function GET(request: Request) {
     }
   }
 
-  // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/app`);
+  // Check if there's a pending invite to redirect to
+  // We'll add a special page that checks localStorage client-side
+  return NextResponse.redirect(`${origin}/auth/redirect`);
 }
