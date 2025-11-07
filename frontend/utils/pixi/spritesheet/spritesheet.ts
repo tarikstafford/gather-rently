@@ -7,6 +7,14 @@ import { rentlySpriteSheetData } from './rently'
 import { kenney_citySpriteSheetData } from './kenney_city'
 import { kenney_buildingsSpriteSheetData } from './kenney_buildings'
 import { kenney_landscapeSpriteSheetData } from './kenney_landscape'
+import { gatherArchitectureSpriteSheetData } from './gather_architecture'
+import { gatherFloorsSpriteSheetData } from './gather_floors'
+import { gatherRoofsSpriteSheetData } from './gather_roofs'
+import { gatherShadowsSpriteSheetData } from './gather_shadows'
+import { gatherSignageSpriteSheetData } from './gather_signage'
+import { gatherTerrainsSpriteSheetData } from './gather_terrains'
+import { gatherWallsSpriteSheetData } from './gather_walls'
+import { gatherGraffitiSpriteSheetData } from './gather_graffiti'
 import { Layer } from '../types'
 import { SpriteSheetData } from './SpriteSheetData'
 
@@ -29,7 +37,7 @@ type Sheets = {
     [key in SheetName]?: PIXI.Spritesheet
 }
 
-export type SheetName = 'ground' | 'grasslands' | 'village' | 'city' | 'rently' | 'kenney_city' | 'kenney_buildings' | 'kenney_landscape'
+export type SheetName = 'ground' | 'grasslands' | 'village' | 'city' | 'rently' | 'kenney_city' | 'kenney_buildings' | 'kenney_landscape' | 'gather_architecture' | 'gather_floors' | 'gather_roofs' | 'gather_shadows' | 'gather_signage' | 'gather_terrains' | 'gather_walls' | 'gather_graffiti'
 
 class Sprites {
     public spriteSheetDataSet: { [key in SheetName]: SpriteSheetData } = {
@@ -41,6 +49,14 @@ class Sprites {
         kenney_city: kenney_citySpriteSheetData,
         kenney_buildings: kenney_buildingsSpriteSheetData,
         kenney_landscape: kenney_landscapeSpriteSheetData,
+        gather_architecture: gatherArchitectureSpriteSheetData,
+        gather_floors: gatherFloorsSpriteSheetData,
+        gather_roofs: gatherRoofsSpriteSheetData,
+        gather_shadows: gatherShadowsSpriteSheetData,
+        gather_signage: gatherSignageSpriteSheetData,
+        gather_terrains: gatherTerrainsSpriteSheetData,
+        gather_walls: gatherWallsSpriteSheetData,
+        gather_graffiti: gatherGraffitiSpriteSheetData,
     }
     public sheets: Sheets = {}
 

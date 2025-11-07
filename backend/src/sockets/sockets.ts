@@ -121,7 +121,17 @@ export function sockets(io: Server) {
 
                 const user = users.getUser(uid)!
                 const username = formatEmailToName(user.user_metadata.email)
-                sessionManager.addPlayerToSession(socket.id, realmData.realmId, uid, username, profile.skin)
+
+                // Extract just the character number from skin if it's in the old format
+                let skin = profile.skin
+                if (skin.includes('/')) {
+                    const match = skin.match(/Character_(\d+)\.png/)
+                    if (match) {
+                        skin = match[1]
+                    }
+                }
+
+                sessionManager.addPlayerToSession(socket.id, realmData.realmId, uid, username, skin)
                 const newSession = sessionManager.getPlayerSession(uid)
                 const player = newSession.getPlayer(uid)   
 

@@ -32,7 +32,7 @@ export default async function Play({ params, searchParams }: { params: { id: str
         console.log('Profile not found, creating one...')
         const { data: newProfile, error: createError } = await supabase
             .from('profiles')
-            .insert({ id: user.id, skin: '/sprites/characters/Character_001.png', visited_realms: [] })
+            .insert({ id: user.id, skin: '001', visited_realms: [] })
             .select('skin')
             .single()
 
@@ -42,7 +42,7 @@ export default async function Play({ params, searchParams }: { params: { id: str
         }
 
         // Use the newly created profile
-        const skin = newProfile?.skin || '/sprites/characters/Character_001.png'
+        const skin = newProfile?.skin || '001'
 
         return (
             <PlayClient
@@ -61,7 +61,14 @@ export default async function Play({ params, searchParams }: { params: { id: str
     const realm = data
     const map_data = realm.map_data
 
+    // Extract just the character number from the skin path (e.g., "043" from "/sprites/characters/Character_043.png")
     let skin = profile.skin
+    if (skin.includes('/')) {
+        const match = skin.match(/Character_(\d+)\.png/)
+        if (match) {
+            skin = match[1]
+        }
+    }
 
     if (searchParams.shareId && realm.owner_id !== user.id) {
         updateVisitedRealms(session.access_token, searchParams.shareId)
