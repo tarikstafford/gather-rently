@@ -13,6 +13,7 @@ import defaultMap from '@/utils/defaultmap.json'
 import { generateRandomMap, generateRentlyOffice } from '@/utils/mapGenerator'
 import { generateMapWithAI } from '@/utils/aiMapBuilder'
 import { generateMagicalForest } from '@/utils/generateMagicalForest'
+import { generateMapWithPixelLab } from '@/utils/aiMapBuilderWithPixelLab'
 
 const CreateRealmModal:React.FC = () => {
 
@@ -21,7 +22,7 @@ const CreateRealmModal:React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const [aiPrompt, setAiPrompt] = useState<string>('')
 
-    const [mapType, setMapType] = useState<'starter' | 'random' | 'rently' | 'ai' | 'blank' | 'forest'>('starter')
+    const [mapType, setMapType] = useState<'starter' | 'random' | 'rently' | 'ai' | 'ai-pixellab' | 'blank' | 'forest'>('starter')
 
     const router = useRouter()
 
@@ -60,6 +61,19 @@ const CreateRealmModal:React.FC = () => {
                     prompt: aiPrompt,
                     floorPalette: 'ground',
                     objectPalettes: ['kenney_city', 'kenney_buildings', 'village']
+                })
+            } else if (mapType === 'ai-pixellab') {
+                if (!aiPrompt.trim()) {
+                    toast.error('Please enter a description for the AI to generate')
+                    setLoading(false)
+                    return
+                }
+                toast.info('PixelLab AI is generating custom sprites and designing your space... This may take 1-2 minutes.')
+                realmData.map_data = await generateMapWithPixelLab({
+                    prompt: aiPrompt,
+                    width: 50,
+                    height: 50,
+                    usePixelLabSprites: true
                 })
             } else if (mapType === 'blank') {
                 // Blank map with minimal structure - just a spawn point
@@ -161,7 +175,19 @@ const CreateRealmModal:React.FC = () => {
                             onChange={() => setMapType('ai')}
                             className='w-4 h-4 accent-sweet-mint'
                         />
-                        <label htmlFor="ai" className='text-plum-stain'>AI Generated - Describe your space and let AI build it</label>
+                        <label htmlFor="ai" className='text-plum-stain'>AI Generated - Describe your space using preset sprites</label>
+                    </div>
+
+                    <div className='flex items-center gap-3'>
+                        <input
+                            type="radio"
+                            id="ai-pixellab"
+                            name="mapType"
+                            checked={mapType === 'ai-pixellab'}
+                            onChange={() => setMapType('ai-pixellab')}
+                            className='w-4 h-4 accent-sweet-mint'
+                        />
+                        <label htmlFor="ai-pixellab" className='text-plum-stain'>PixelLab AI - Generate custom sprites on-demand (takes longer)</label>
                     </div>
 
                     <div className='flex items-center gap-3'>
@@ -189,17 +215,23 @@ const CreateRealmModal:React.FC = () => {
                     </div>
                 </div>
 
-                {mapType === 'ai' && (
+                {(mapType === 'ai' || mapType === 'ai-pixellab') && (
                     <div className='w-full'>
                         <label className='text-white text-sm mb-2 block'>Describe your space:</label>
                         <textarea
                             value={aiPrompt}
                             onChange={(e) => setAiPrompt(e.target.value)}
-                            placeholder="e.g., A modern tech startup office with 3 meeting rooms, an open workspace with 10 desks, a meditation room, a kitchen, and a music room for jam sessions"
+                            placeholder={mapType === 'ai-pixellab'
+                                ? "e.g., A cyberpunk office with neon-lit desks, holographic displays, futuristic chairs, and a rooftop garden with bioluminescent plants"
+                                : "e.g., A modern tech startup office with 3 meeting rooms, an open workspace with 10 desks, a meditation room, a kitchen, and a music room for jam sessions"
+                            }
                             className='w-full bg-dark-plum border border-dark-plum text-white placeholder:text-plum-stain rounded-lg p-3 min-h-[100px] resize-y'
                             maxLength={500}
                         />
-                        <p className='text-xs text-plum-stain mt-1'>{aiPrompt.length}/500 characters</p>
+                        <p className='text-xs text-plum-stain mt-1'>
+                            {aiPrompt.length}/500 characters
+                            {mapType === 'ai-pixellab' && <span className='ml-2 text-sweet-mint'>• Custom sprites will be generated</span>}
+                        </p>
                     </div>
                 )}
 

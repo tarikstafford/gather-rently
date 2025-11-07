@@ -22,10 +22,16 @@ const TileSchema = z.object({
 
 const TileMapSchema = z.record(z.string().regex(/^(-?\d+), (-?\d+)$/), TileSchema)
 
+const CustomSpritesSchema = z.object({
+  floors: z.record(z.string(), z.string()).optional(), // mapping of tile name to image URL
+  objects: z.record(z.string(), z.string()).optional(), // mapping of object name to image URL
+}).optional()
+
 const RoomSchema = z.object({
   name: z.string(),
   tilemap: TileMapSchema,
   channelId: z.string().optional(),
+  customSprites: CustomSpritesSchema,
 })
 
 const SpawnpointSchema = z.object({
