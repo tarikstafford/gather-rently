@@ -136,7 +136,7 @@ export function sockets(io: Server) {
             }
 
             if (realm.only_owner) {
-                return rejectJoin('This realm is private right now. Come back later!')
+                return rejectJoin('This office space is private right now. Please check back later!')
             }
 
             if (realm.share_id === realmData.shareId) {

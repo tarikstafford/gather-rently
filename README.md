@@ -1,8 +1,8 @@
-# Rently.sg
+# Rently Digital Office
 
-Your digital gathering space for seamless collaboration.
+The dedicated virtual workspace for Rently employees.
 
-Rently is a virtual collaboration platform built for teams in Singapore and beyond. Create customizable virtual spaces where your team can meet, collaborate, and connect naturally through proximity-based video chat.
+This is Rently's internal digital office - a customizable virtual space where our team can hang out, work together, and collaborate naturally through proximity-based video chat. Built exclusively for Rently employees to connect, create, and thrive.
 
 ## Key Features
 

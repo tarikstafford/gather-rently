@@ -1,6 +1,6 @@
-# Adding New Sprites to Gather Clone
+# Adding New Sprites to Rently Digital Office
 
-This guide explains how to add new sprites (tiles, furniture, objects) to the game.
+This guide explains how to add new sprites (tiles, furniture, objects) to the Rently virtual office.
 
 ## Overview
 

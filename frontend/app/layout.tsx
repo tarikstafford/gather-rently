@@ -18,8 +18,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Gather",
-  description: "This is a Gather clone.",
+  title: "Rently Digital Office - Team Workspace",
+  description: "The dedicated virtual workspace for Rently employees. Connect, collaborate, and work together in our immersive digital office.",
 }
 
 export default function RootLayout({

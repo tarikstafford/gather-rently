@@ -24,14 +24,14 @@ export default function Index() {
         <div className='flex flex-col space-y-8 text-white'>
           <div className='space-y-4'>
             <h1 className='font-bold text-5xl md:text-6xl leading-tight'>
-              Welcome to <span className='text-[#E1CFFF]'>Rently.sg</span>
+              Welcome to the <span className='text-[#E1CFFF]'>Rently</span> Digital Office
             </h1>
             <p className='text-xl md:text-2xl text-[#E1CFFF] leading-relaxed'>
-              Your digital gathering space for seamless collaboration
+              Our dedicated virtual workspace for the Rently team
             </p>
             <p className='text-lg text-white/90 leading-relaxed max-w-xl'>
-              Connect with your team in immersive virtual spaces. Rently makes remote collaboration feel natural,
-              trustworthy and simple — just the way it should be.
+              Hang out with your teammates, collaborate on projects, and work together in our immersive
+              digital office. A space built exclusively for Rently employees to connect, create, and thrive.
             </p>
           </div>
 
