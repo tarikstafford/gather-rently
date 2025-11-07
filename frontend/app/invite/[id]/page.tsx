@@ -25,13 +25,24 @@ export default async function InvitePage({ params, searchParams }: InvitePagePro
         .eq('share_id', searchParams.shareId)
         .single()
 
+    // Debug logging in development
+    if (process.env.NODE_ENV === 'development') {
+        console.log('Invite page debug:', {
+            realmId: params.id,
+            shareId: searchParams.shareId,
+            error: error,
+            realm: realm,
+            hasUser: !!user
+        })
+    }
+
     if (error || !realm) {
         // If no shareId or invalid invite, redirect to signin
         if (!searchParams.shareId) {
             return redirect('/signin')
         }
 
-        // Show error page for invalid invite
+        // Show error page for invalid invite with debug info in dev mode
         return (
             <div className='gradient w-full h-screen flex flex-col items-center justify-center p-4'>
                 <div className='flex flex-col items-center gap-4'>
@@ -41,6 +52,12 @@ export default async function InvitePage({ params, searchParams }: InvitePagePro
                     <p className='text-white/80 text-center max-w-md'>
                         This invite link is invalid or has expired. Please request a new invite link from the space owner.
                     </p>
+                    {process.env.NODE_ENV === 'development' && error && (
+                        <div className='mt-4 p-4 bg-red-900/20 border border-red-500 rounded text-xs text-white max-w-md overflow-auto'>
+                            <p className='font-bold mb-2'>Debug Info:</p>
+                            <pre>{JSON.stringify({ error, params, searchParams }, null, 2)}</pre>
+                        </div>
+                    )}
                 </div>
             </div>
         )
