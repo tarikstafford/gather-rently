@@ -70,7 +70,7 @@ export async function generateMapWithAITiles(options: AIMapGenerationOptions): P
     const height = options.height || 30
 
     // First, we need to analyze the prompt to determine what tiles we need
-    const tileDescriptions = analyzeProm ptForTiles(options.prompt)
+    const tileDescriptions = analyzePromptForTiles(options.prompt)
 
     let customTiles: { floorTiles: Record<string, string>, objectTiles: Record<string, string> } | null = null
 
