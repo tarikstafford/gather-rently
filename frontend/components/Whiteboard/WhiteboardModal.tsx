@@ -37,9 +37,23 @@ export const WhiteboardModal: React.FC<WhiteboardModalProps> = ({ whiteboardId, 
 
       if (error) {
         console.error('Failed to load whiteboard:', error)
-        setInitialData({ elements: [], appState: {} })
+        setInitialData({
+          elements: [],
+          appState: {
+            viewBackgroundColor: '#ffffff',
+            zoom: { value: 1 }
+          }
+        })
       } else {
-        setInitialData(data.canvas_data || { elements: [], appState: {} })
+        const canvasData = data.canvas_data || { elements: [], appState: {} }
+        // Ensure proper zoom level
+        if (!canvasData.appState?.zoom) {
+          canvasData.appState = {
+            ...canvasData.appState,
+            zoom: { value: 1 }
+          }
+        }
+        setInitialData(canvasData)
       }
       setIsLoading(false)
     }
@@ -179,6 +193,9 @@ export const WhiteboardModal: React.FC<WhiteboardModalProps> = ({ whiteboardId, 
                 saveAsImage: true,
               }
             }}
+            viewModeEnabled={false}
+            zenModeEnabled={false}
+            gridModeEnabled={false}
           />
         </div>
 

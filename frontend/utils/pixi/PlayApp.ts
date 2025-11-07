@@ -41,9 +41,25 @@ export class PlayApp extends App {
         await super.loadRoom(index)
         this.setUpBlockedTiles()
         this.setUpFadeTiles()
+        this.drawWhiteboardSprites()
         this.spawnLocalPlayer()
         await this.syncOtherPlayers()
         this.displayInitialChatMessage()
+    }
+
+    private drawWhiteboardSprites = () => {
+        // Draw whiteboard sprites on the map so players can see where they are
+        for (const [key, value] of Object.entries(this.realmData.rooms[this.currentRoomIndex].tilemap)) {
+            if (value.whiteboard) {
+                const [x, y] = key.split(',').map(Number)
+                const screenCoordinates = this.convertTileToScreenCoordinates(x, y)
+                const whiteboardSprite = new PIXI.Sprite(PIXI.Assets.get('/sprites/whiteboard-tile.png'))
+                whiteboardSprite.x = screenCoordinates.x
+                whiteboardSprite.y = screenCoordinates.y
+                // Add to object layer so it appears above floor tiles
+                this.layers.object.addChild(whiteboardSprite)
+            }
+        }
     }
 
     private setUpFadeTiles = () => {
