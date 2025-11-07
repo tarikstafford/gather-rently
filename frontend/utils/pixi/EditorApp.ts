@@ -116,6 +116,12 @@ export class EditorApp extends App {
                 const sprite = this.placePrivateAreaSprite(x, y)
                 this.setUpEraserTool(sprite, x, y, 'gizmo')
             }
+
+            if (value.whiteboard) {
+                const [x, y] = key.split(',').map(Number)
+                const sprite = this.placeWhiteboardSprite(x, y)
+                this.setUpEraserTool(sprite, x, y, 'gizmo')
+            }
         }
 
         if (this.currentRoomIndex === this.realmData.spawnpoint.roomIndex) {
@@ -145,7 +151,8 @@ export class EditorApp extends App {
             PIXI.Assets.load('/sprites/collider-tile.png'),
             PIXI.Assets.load('/sprites/teleport-tile.png'),
             PIXI.Assets.load('/sprites/spawn-tile.png'),
-            PIXI.Assets.load('/sprites/private-tile.png')
+            PIXI.Assets.load('/sprites/private-tile.png'),
+            PIXI.Assets.load('/sprites/whiteboard-tile.png')
         ])
     }
 
@@ -243,9 +250,37 @@ export class EditorApp extends App {
         return sprite
     }
 
+    private placeWhiteboard = (x: number, y: number, tile: PIXI.Sprite, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
+
+        // Check if there's already a gizmo at this position
+        if (this.gizmoSprites[key]) {
+            return
+        }
+
+        // Check for collisions
+        if (this.collidersFromSpritesMap[key] || (this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y)) {
+            return
+        }
+
+        this.addWhiteboardToRealmData(x, y, snapshot)
+        this.placeWhiteboardSprite(x, y, tile)
+    }
+
     private placeTeleportSprite = (x: number, y: number, tile?: PIXI.Sprite) => {
         const key = `${x}, ${y}` as TilePoint
         const sprite = tile || new PIXI.Sprite(PIXI.Texture.from('/sprites/teleport-tile.png'))
+        sprite.x = x * 32
+        sprite.y = y * 32
+        this.gizmoContainer.addChild(sprite)
+        this.gizmoSprites[key] = sprite
+
+        return sprite
+    }
+
+    private placeWhiteboardSprite = (x: number, y: number, tile?: PIXI.Sprite) => {
+        const key = `${x}, ${y}` as TilePoint
+        const sprite = tile || new PIXI.Sprite(PIXI.Texture.from('/sprites/whiteboard-tile.png'))
         sprite.x = x * 32
         sprite.y = y * 32
         this.gizmoContainer.addChild(sprite)
@@ -468,6 +503,9 @@ export class EditorApp extends App {
             return
         } else if (type === 'Private Area') {
             this.placePrivateArea(x, y, tile, snapshot)
+            return
+        } else if (type === 'Whiteboard') {
+            this.placeWhiteboard(x, y, tile, snapshot)
             return
         }
 
@@ -728,6 +766,19 @@ export class EditorApp extends App {
         this.updateRealmData(newRealmData, snapshot)
     }
 
+    private addWhiteboardToRealmData = (x: number, y: number, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
+        const whiteboardId = uuidv4()
+        const newRealmData = this.getRealmDataCopy()
+        newRealmData.rooms[this.currentRoomIndex].tilemap[key] = {
+            ...newRealmData.rooms[this.currentRoomIndex].tilemap[key],
+            whiteboard: {
+                id: whiteboardId
+            }
+        }
+        this.updateRealmData(newRealmData, snapshot)
+    }
+
     private removeGizmoFromRealmData = (x: number, y: number, snapshot: boolean) => {
         const key = `${x}, ${y}` as TilePoint
         const newRealmData = this.getRealmDataCopy()
@@ -735,13 +786,14 @@ export class EditorApp extends App {
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].impassable
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].teleporter
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].privateAreaId
+            delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].whiteboard
 
             // delete the key if no data on it
             if (Object.keys(newRealmData.rooms[this.currentRoomIndex].tilemap[key]).length === 0) {
                 delete newRealmData.rooms[this.currentRoomIndex].tilemap[key]
             }
         }
-        
+
         this.updateRealmData(newRealmData, snapshot)
     }
 
@@ -935,6 +987,10 @@ export class EditorApp extends App {
             const privateAreaTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/private-tile.png'))
             const layer = 'gizmo'
             return { data: {} as SpriteSheetTile, layer, tile: privateAreaTile, type: 'Private Area' }
+        } else if (this.specialTileMode === 'Whiteboard') {
+            const whiteboardTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/whiteboard-tile.png'))
+            const layer = 'gizmo'
+            return { data: {} as SpriteSheetTile, layer, tile: whiteboardTile, type: 'Whiteboard' }
         }
 
         const data = sprites.getSpriteData(this.selectedPalette, this.selectedTile)
