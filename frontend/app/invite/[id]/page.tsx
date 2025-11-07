@@ -17,21 +17,37 @@ export default async function InvitePage({ params, searchParams }: InvitePagePro
         return redirect(`/play/${params.id}?shareId=${searchParams.shareId}`)
     }
 
-    // Fetch realm data to show preview
+    // Fetch realm data to show preview using RPC function that bypasses RLS
     const { data: realm, error } = await supabase
-        .from('realms')
-        .select('name, share_id, only_owner')
-        .eq('id', params.id)
-        .eq('share_id', searchParams.shareId)
-        .single()
+        .rpc('get_realm_for_invite', {
+            realm_id: params.id,
+            share_id_param: searchParams.shareId
+        })
 
     if (error || !realm) {
-        return redirect('/signin')
+        // If no shareId or invalid invite, redirect to signin
+        if (!searchParams.shareId) {
+            return redirect('/signin')
+        }
+
+        // Show error page for invalid invite
+        return (
+            <div className='gradient w-full h-screen flex flex-col items-center justify-center p-4'>
+                <div className='flex flex-col items-center gap-4'>
+                    <h1 className='text-3xl font-bold text-white text-center'>
+                        Invalid Invite Link
+                    </h1>
+                    <p className='text-white/80 text-center max-w-md'>
+                        This invite link is invalid or has expired. Please request a new invite link from the space owner.
+                    </p>
+                </div>
+            </div>
+        )
     }
 
     if (realm.only_owner) {
         return (
-            <div className='w-full h-screen grid place-items-center p-4'>
+            <div className='gradient w-full h-screen grid place-items-center p-4'>
                 <div className='flex flex-col items-center'>
                     <h1 className='text-xl sm:text-3xl max-w-[450px] text-center text-white'>
                         This office space is private right now. Please check back later! 😶
