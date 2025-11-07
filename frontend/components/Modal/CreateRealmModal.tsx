@@ -60,8 +60,22 @@ const CreateRealmModal:React.FC = () => {
                     floorPalette: 'ground',
                     objectPalettes: ['kenney_city', 'kenney_buildings', 'village']
                 })
+            } else if (mapType === 'blank') {
+                // Blank map with minimal structure - just a spawn point
+                realmData.map_data = {
+                    spawnpoint: {
+                        roomIndex: 0,
+                        x: 0,
+                        y: 0
+                    },
+                    rooms: [
+                        {
+                            name: 'Room 1',
+                            tilemap: {}
+                        }
+                    ]
+                }
             }
-            // blank map will have no map_data
 
             const { data, error } = await supabase.from('realms').insert(realmData).select()
 
