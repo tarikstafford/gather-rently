@@ -45,7 +45,7 @@ const SpecialTiles:React.FC<SpecialTilesProps> = ({ specialTile, selectSpecialTi
                 <Tree className='w-12 h-12'/>
             </SpecialTileItem>
             <SpecialTileItem
-                iconColor='purple'
+                iconColor='blue'
                 title='Whiteboard'
                 description='Add a collaborative whiteboard for drawing and brainstorming.'
                 selected={specialTile === 'Whiteboard'}

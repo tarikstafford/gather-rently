@@ -1,4 +1,4 @@
-import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCRemoteUser, IDataChannelConfig } from 'agora-rtc-sdk-ng'
+import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCRemoteUser, IDataChannelConfig, ILocalVideoTrack, ILocalAudioTrack } from 'agora-rtc-sdk-ng'
 import signal from '../signal'
 import { createHash } from 'crypto'
 import { generateToken } from './generateToken'
@@ -7,7 +7,7 @@ export class VideoChat {
     private client: IAgoraRTCClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
     private microphoneTrack: IMicrophoneAudioTrack | null = null
     private cameraTrack: ICameraVideoTrack | null = null
-    private screenTrack: ICameraVideoTrack | null = null
+    private screenTrack: ILocalVideoTrack | [ILocalVideoTrack, ILocalAudioTrack] | null = null
     private currentChannel: string = ''
 
     private remoteUsers: { [uid: string]: IAgoraRTCRemoteUser } = {}
@@ -173,14 +173,16 @@ export class VideoChat {
 
             // Publish screen track
             if (this.client.connectionState === 'CONNECTED') {
-                await this.client.publish([this.screenTrack])
+                const tracksToPublish = Array.isArray(this.screenTrack) ? this.screenTrack : [this.screenTrack]
+                await this.client.publish(tracksToPublish)
             }
 
             this.isScreenSharing = true
             signal.emit('screen-share-started')
 
             // Handle when user stops sharing via browser UI
-            this.screenTrack.on("track-ended", () => {
+            const videoTrack = Array.isArray(this.screenTrack) ? this.screenTrack[0] : this.screenTrack
+            videoTrack.on("track-ended", () => {
                 this.stopScreenShare()
             })
 
@@ -198,10 +200,20 @@ export class VideoChat {
         try {
             // Unpublish and stop screen track
             if (this.client.connectionState === 'CONNECTED') {
-                await this.client.unpublish([this.screenTrack])
+                const tracksToUnpublish = Array.isArray(this.screenTrack) ? this.screenTrack : [this.screenTrack]
+                await this.client.unpublish(tracksToUnpublish)
             }
-            this.screenTrack.stop()
-            this.screenTrack.close()
+
+            // Stop and close tracks
+            if (Array.isArray(this.screenTrack)) {
+                this.screenTrack.forEach(track => {
+                    track.stop()
+                    track.close()
+                })
+            } else {
+                this.screenTrack.stop()
+                this.screenTrack.close()
+            }
             this.screenTrack = null
             this.isScreenSharing = false
 
@@ -233,8 +245,15 @@ export class VideoChat {
             this.microphoneTrack.close()
         }
         if (this.screenTrack) {
-            this.screenTrack.stop()
-            this.screenTrack.close()
+            if (Array.isArray(this.screenTrack)) {
+                this.screenTrack.forEach(track => {
+                    track.stop()
+                    track.close()
+                })
+            } else {
+                this.screenTrack.stop()
+                this.screenTrack.close()
+            }
         }
         this.microphoneTrack = null
         this.cameraTrack = null

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { VideoCameraSlash, MicrophoneSlash, VideoCamera, Microphone, MonitorPlay, MonitorSlash } from '@phosphor-icons/react'
+import { VideoCameraSlash, MicrophoneSlash, VideoCamera, Microphone, MonitorPlay, Monitor } from '@phosphor-icons/react'
 import { useVideoChat } from '@/app/hooks/useVideoChat'
 import { videoChat } from '@/utils/video-chat/video-chat'
 import signal from '@/utils/signal'
@@ -60,7 +60,7 @@ const MicAndCameraButtons:React.FC<MicAndCameraButtonsProps> = () => {
                 onClick={toggleScreenShare}
                 title={isScreenSharing ? 'Stop Screen Share' : 'Share Screen'}
             >
-                {isScreenSharing ? <MonitorPlay className={screenClass} /> : <MonitorSlash className={screenClass} />}
+                {isScreenSharing ? <MonitorPlay className={screenClass} /> : <Monitor className={screenClass} />}
             </button>
         </section>
 

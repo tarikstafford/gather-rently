@@ -176,7 +176,6 @@ export const WhiteboardModal: React.FC<WhiteboardModalProps> = ({ whiteboardId, 
             UIOptions={{
               canvasActions: {
                 loadScene: false,
-                export: true,
                 saveAsImage: true,
               }
             }}
