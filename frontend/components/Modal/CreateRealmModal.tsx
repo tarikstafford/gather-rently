@@ -12,6 +12,7 @@ import { removeExtraSpaces } from '@/utils/removeExtraSpaces'
 import defaultMap from '@/utils/defaultmap.json'
 import { generateRandomMap, generateRentlyOffice } from '@/utils/mapGenerator'
 import { generateMapWithAI } from '@/utils/aiMapBuilder'
+import { generateMagicalForest } from '@/utils/generateMagicalForest'
 
 const CreateRealmModal:React.FC = () => {
 
@@ -20,7 +21,7 @@ const CreateRealmModal:React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const [aiPrompt, setAiPrompt] = useState<string>('')
 
-    const [mapType, setMapType] = useState<'starter' | 'random' | 'rently' | 'ai' | 'blank'>('starter')
+    const [mapType, setMapType] = useState<'starter' | 'random' | 'rently' | 'ai' | 'blank' | 'forest'>('starter')
 
     const router = useRouter()
 
@@ -75,6 +76,8 @@ const CreateRealmModal:React.FC = () => {
                         }
                     ]
                 }
+            } else if (mapType === 'forest') {
+                realmData.map_data = generateMagicalForest()
             }
 
             const { data, error } = await supabase.from('realms').insert(realmData).select()
@@ -159,6 +162,18 @@ const CreateRealmModal:React.FC = () => {
                             className='w-4 h-4 accent-sweet-mint'
                         />
                         <label htmlFor="ai" className='text-plum-stain'>AI Generated - Describe your space and let AI build it</label>
+                    </div>
+
+                    <div className='flex items-center gap-3'>
+                        <input
+                            type="radio"
+                            id="forest"
+                            name="mapType"
+                            checked={mapType === 'forest'}
+                            onChange={() => setMapType('forest')}
+                            className='w-4 h-4 accent-sweet-mint'
+                        />
+                        <label htmlFor="forest" className='text-plum-stain'>Magical Forest - Enchanted woodland with clearings and winding paths</label>
                     </div>
 
                     <div className='flex items-center gap-3'>
